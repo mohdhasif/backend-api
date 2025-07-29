@@ -1,0 +1,40 @@
+2025-07-24 18:42:08 - Received Data:
+Array
+(
+    [name] => hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [portfolio] => testing
+    [roles] => Array
+        (
+            [0] => Graphic Designer
+            [1] => Video
+            [2] => 2D / 3D Designer
+            [3] => Content Strategies
+            [4] => Copywriter
+            [5] => Digital Marketer
+            [6] => Web Developer
+        )
+
+)
+
+
+2025-07-24 19:02:10 - Received Data:
+Array
+(
+    [name] => hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [portfolio] => testing
+    [roles] => Array
+        (
+            [0] => Multimedia Designer
+            [1] => Video
+            [2] => 2D / 3D Designer
+            [3] => Copywriter
+            [4] => Web Developer
+        )
+
+)
+
+

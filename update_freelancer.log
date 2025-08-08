@@ -1,0 +1,49 @@
+2025-08-07 09:10:56 - Received Data:
+Array
+(
+    [freelancer_id] => 1
+    [name] => Ali Hassan
+    [email] => alihassan@example.com
+    [skillset] => UI/UX, Figma, Adobe XD, Story Board
+    [availability] => true
+    [status] => pending
+)
+
+
+2025-08-07 09:36:06 - Received Data:
+Array
+(
+    [freelancer_id] => 1
+    [name] => Ali Hassanuddin
+    [email] => alihassan@example.com
+    [skillset] => UI/UX, Figma, Adobe XD
+    [availability] => true
+    [status] => pending
+)
+
+
+2025-08-07 09:41:56 - Received Data:
+Array
+(
+    [freelancer_id] => 1
+    [name] => Ali Hassanuddin
+    [email] => alihassan@example.com
+    [skillset] => UI/UX, Figma, Adobe XD
+    [availability] => false
+    [status] => pending
+    [avatar] => https://fd9315becb7e.ngrok-free.app/uploads/avatars/avatars.png
+)
+
+
+2025-08-07 09:56:32 - Received Data:
+Array
+(
+    [freelancer_id] => 4
+    [name] => mohd hasif
+    [email] => mohdhasif24181@gmail.com
+    [skillset] => testing
+    [availability] => true
+    [status] => pending
+)
+
+

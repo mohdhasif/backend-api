@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Freelancer</title>
+</head>
+<body>
+    <h2>Form Tambah Freelancer</h2>
+    <form action="insert_freelancer.php" method="POST" enctype="multipart/form-data">
+        <label>Nama:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Skillset:</label><br>
+        <textarea name="skillset" required></textarea><br><br>
+
+        <label>Availability:</label><br>
+        <select name="availability">
+            <option value="1">Available</option>
+            <option value="0">Not Available</option>
+        </select><br><br>
+
+        <label>Upload Avatar:</label><br>
+        <input type="file" name="avatar"><br><br>
+
+        <button type="submit">Simpan</button>
+    </form>
+</body>
+</html>

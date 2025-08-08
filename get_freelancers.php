@@ -1,0 +1,49 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
+$conn = new mysqli("localhost", "root", "", "finiteapp");
+if ($conn->connect_error) {
+    http_response_code(500);
+    echo json_encode(["error" => "Database connection failed"]);
+    exit();
+}
+
+$base_url = 'https://fd9315becb7e.ngrok-free.app/uploads/avatars/';
+$default_avatar = $base_url . 'avatars.png';
+
+$sql = "
+    SELECT 
+        f.id AS freelancer_id,
+        u.id AS user_id,
+        u.name,
+        u.email,
+        f.skillset,
+        f.availability,
+        f.avatar_url,
+        f.status
+    FROM freelancers f
+    INNER JOIN users u ON f.user_id = u.id
+    WHERE u.role = 'freelancer'
+";
+
+$result = $conn->query($sql);
+$freelancers = [];
+
+while ($row = $result->fetch_assoc()) {
+    $avatar = $row['avatar_url'] ? $base_url . $row['avatar_url'] : $default_avatar;
+
+    $freelancers[] = [
+        'id' => (int)$row['freelancer_id'],
+        'user_id' => (int)$row['user_id'],
+        'name' => $row['name'],
+        'email' => $row['email'],
+        'skillset' => $row['skillset'],
+        'availability' => (bool)$row['availability'],
+        'avatar' => $avatar,
+        'status' => $row['status'],
+    ];
+}
+
+echo json_encode($freelancers);
+?>

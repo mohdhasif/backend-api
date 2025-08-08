@@ -1,0 +1,23 @@
+--- NEW REQUEST [2025-08-07 05:54:23] ---
+HEADERS:
+Array
+(
+    [Host] => fd9315becb7e.ngrok-free.app
+    [User-Agent] => okhttp/4.9.2
+    [Content-Length] => 229
+    [Accept-Encoding] => gzip
+    [Content-Type] => application/json
+    [X-Forwarded-For] => 60.52.53.5
+    [X-Forwarded-Host] => fd9315becb7e.ngrok-free.app
+    [X-Forwarded-Proto] => https
+)
+_POST:
+Array
+(
+)
+_FILES:
+Array
+(
+)
+RAW BODY:
+{"client_id":"10","company_name":"","phone":"01123119384","status":"pending","client_type":"individual","logo_url":"file:///data/user/0/com.finitegenoneapp/cache/rn_image_picker_lib_temp_833f6a95-1ded-42c3-9851-101ddce88e72.jpg"}

@@ -2,16 +2,14 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
-// --- Dapatkan token & project_id ---
+// --- Dapatkan token dari header ---
 $headers = apache_request_headers();
 $authHeader = $headers['Authorization'] ?? '';
 $token = str_replace('Bearer ', '', $authHeader);
 
-$project_id = $_GET['project_id'] ?? null;
-
-if (!$token || !$project_id) {
+if (!$token) {
     http_response_code(400);
-    echo json_encode(['error' => 'Missing token or project_id']);
+    echo json_encode(['error' => 'Missing token']);
     exit;
 }
 
@@ -23,8 +21,8 @@ if ($conn->connect_error) {
     exit;
 }
 
-// --- Cari user berdasarkan token ---
-$stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
+// --- Sahkan token dan ambil user ---
+$stmt = $conn->prepare("SELECT id, role FROM users WHERE token = ?");
 $stmt->bind_param("s", $token);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -37,33 +35,34 @@ if ($result->num_rows === 0) {
 
 $user = $result->fetch_assoc();
 $user_id = $user['id'];
+$role = $user['role'];
 
-// --- Sahkan user adalah owner projek ini ---
-$stmt = $conn->prepare("SELECT id FROM projects WHERE id = ? AND client_id = ?");
-$stmt->bind_param("ii", $project_id, $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
+// --- Hanya admin dibenarkan akses senarai client ---
+if ($role !== 'admin') {
     http_response_code(403);
-    echo json_encode(['error' => 'Forbidden - not your project']);
+    echo json_encode(['error' => 'Forbidden - Admins only']);
     exit;
 }
 
-// --- Fetch tasks (anggaran table `tasks`) ---
-$stmt = $conn->prepare("
-    SELECT id, title, description, status, due_date
-    FROM tasks
-    WHERE project_id = ?
-    ORDER BY due_date ASC
-");
-$stmt->bind_param("i", $project_id);
-$stmt->execute();
-$result = $stmt->get_result();
+// --- Fetch semua client ---
+$sql = "
+    SELECT 
+        clients.id AS client_id,
+        users.name,
+        users.email,
+        clients.company_name,
+        clients.phone,
+        users.status
+    FROM clients
+    JOIN users ON clients.user_id = users.id
+    ORDER BY users.created_at DESC
+";
+$result = $conn->query($sql);
 
-$tasks = [];
+$clients = [];
 while ($row = $result->fetch_assoc()) {
-    $tasks[] = $row;
+    $clients[] = $row;
 }
 
-echo json_encode($tasks);
+echo json_encode($clients);
+$conn->close();

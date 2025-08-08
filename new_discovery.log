@@ -1,0 +1,132 @@
+2025-07-30 02:50:12 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasiffullstackdeveloper@gmail.com
+    [phone] => 01123119384
+    [message] => testing
+    [selectedServices] => Array
+        (
+            [0] => 11
+            [1] => 10
+            [2] => 7
+        )
+
+)
+
+
+2025-07-30 03:07:46 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasiffullstackdeveloper@gmail.com
+    [phone] => 01123119384
+    [message] => testing
+    [selectedServices] => Array
+        (
+            [0] => 3
+            [1] => 11
+            [2] => 7
+        )
+
+)
+
+
+2025-07-30 07:54:18 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Azman
+    [email] => Faidz.rusman@gmail.com
+    [phone] => 01123119384
+    [message] => testing
+    [selectedServices] => Array
+        (
+            [0] => 3
+            [1] => 5
+            [2] => 4
+        )
+
+)
+
+
+2025-07-31 08:02:01 - Received Data:
+Array
+(
+)
+
+
+2025-07-31 09:48:32 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [message] => test
+    [selectedServices] => Array
+        (
+            [0] => 1
+            [1] => 5
+            [2] => 6
+        )
+
+)
+
+
+2025-07-31 10:15:04 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [message] => test
+    [selectedServices] => Array
+        (
+            [0] => 1
+            [1] => 5
+            [2] => 6
+        )
+
+)
+
+
+2025-07-31 10:15:40 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [message] => test
+    [selectedServices] => Array
+        (
+            [0] => 1
+            [1] => 5
+            [2] => 6
+        )
+
+)
+
+
+2025-07-31 10:23:56 - Received Data:
+Array
+(
+    [clientType] => individual
+    [name] => Mohd Hasif
+    [email] => mohdhasif24181@gmail.com
+    [phone] => 01123119384
+    [message] => test
+    [selectedServices] => Array
+        (
+            [0] => 1
+            [1] => 5
+            [2] => 6
+        )
+
+)
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Client</title>
+</head>
+<body>
+    <h2>Form Tambah Client</h2>
+    <form action="insert_client.php" method="POST" enctype="multipart/form-data">
+        <label>Company Name:</label><br>
+        <input type="text" name="company_name" required><br><br>
+
+        <label>Phone:</label><br>
+        <input type="text" name="phone" required><br><br>
+
+        <label>Client Status:</label><br>
+        <select name="status">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="active">Active</option>
+            <option value="non-active">Non-active</option>
+        </select><br><br>
+
+        <label>Client Type:</label><br>
+        <select name="client_type">
+            <option value="company">Company</option>
+            <option value="individual">Individual</option>
+        </select><br><br>
+
+        <label>Selected Services (comma separated):</label><br>
+        <input type="text" name="selected_services"><br><br>
+
+        <label>Progress (%):</label><br>
+        <input type="number" name="progress" min="0" max="100"><br><br>
+
+        <label>Upload Logo:</label><br>
+        <input type="file" name="logo"><br><br>
+
+        <button type="submit">Simpan</button>
+    </form>
+</body>
+</html>

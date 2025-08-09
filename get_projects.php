@@ -18,8 +18,12 @@ try {
             projects.description,
             projects.status,
             projects.progress,
-            users.name AS client_name
+            CASE 
+                WHEN clients.client_type = 'company' THEN clients.company_name
+                ELSE users.name
+            END AS client_name
         FROM projects
+        LEFT JOIN clients ON projects.client_id = clients.id
         LEFT JOIN users ON projects.client_id = users.id
         ORDER BY projects.created_at DESC
     ");
@@ -39,4 +43,3 @@ try {
         "details" => $e->getMessage()
     ]);
 }
-?>

@@ -31,7 +31,7 @@ $result = $conn->query($sql);
 $freelancers = [];
 
 while ($row = $result->fetch_assoc()) {
-    $avatar = $row['avatar_url'] ? $base_url . $row['avatar_url'] : $default_avatar;
+    $avatar = $row['avatar_url'] ? $row['avatar_url'] : $default_avatar;
 
     $freelancers[] = [
         'id' => (int)$row['freelancer_id'],

@@ -37,6 +37,18 @@ try {
     $user = $result->fetch_assoc();
     $user_id = (int)$user['id'];
 
+    // --- Sahkan user adalah owner projek ini ---
+    $stmt = $conn->prepare("SELECT id FROM projects WHERE id = ? AND client_id = ?");
+    $stmt->bind_param("ii", $project_id, $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Forbidden - not your project']);
+        exit;
+    }
+
     // --- Fetch tasks ---
     $stmt = $conn->prepare("
         SELECT id, title, description, status, due_date

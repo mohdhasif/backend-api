@@ -1,13 +1,65 @@
 <?php
-// get_project_summaries.php
-require_once __DIR__ . '/db.php';  // guna $conn dan require_auth()
+require_once __DIR__ . '/db.php'; // $conn & CORS/OPTIONS
 
-// Wajib sahkan token (akan 401 kalau tak sah)
-$user = require_auth($conn);
+// ---------- utils: token ----------
+function read_token(): string {
+  $headers = function_exists('getallheaders') ? getallheaders() : [];
+  $auth = $headers['Authorization'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
+  if (!$auth && isset($_GET['token'])) { // fallback for troubleshooting
+    $auth = 'Bearer ' . $_GET['token'];
+  }
+  $auth = trim($auth);
+  return preg_replace('/^Bearer\s+/i', '', $auth);
+}
 
-// Input optional
+// ---------- basic logging (optional) ----------
+try {
+  $logDir = __DIR__ . '/logs';
+  if (!is_dir($logDir)) @mkdir($logDir, 0775, true);
+  @file_put_contents(
+    $logDir . '/get_project_summaries.log',
+    sprintf(
+      "[%s] ip=%s ua=%s method=%s token_prefix=%s\n",
+      date('c'),
+      $_SERVER['REMOTE_ADDR'] ?? '-',
+      $_SERVER['HTTP_USER_AGENT'] ?? '-',
+      $_SERVER['REQUEST_METHOD'] ?? 'GET',
+      substr(read_token(), 0, 6)
+    ),
+    FILE_APPEND
+  );
+} catch (Throwable $e) { /* ignore logging errors */ }
+
+// ---------- auth ----------
+$token = read_token();
+if (!$token) {
+  http_response_code(401);
+  echo json_encode(['success' => false, 'error' => 'Missing token']);
+  exit;
+}
+
+try {
+  $stmt = $conn->prepare("SELECT id, name, email, role FROM users WHERE BINARY token = ? LIMIT 1");
+  $stmt->bind_param("s", $token);
+  $stmt->execute();
+  $u = $stmt->get_result()->fetch_assoc();
+  $stmt->close();
+
+  if (!$u) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+    exit;
+  }
+} catch (Throwable $e) {
+  http_response_code(500);
+  echo json_encode(['success' => false, 'error' => 'Auth query failed']);
+  exit;
+}
+
+// ---------- input ----------
 $projectId = isset($_GET['project_id']) ? (int)$_GET['project_id'] : null;
 
+// ---------- query (no CTE) ----------
 $sql = "
 SELECT
   p.id AS project_id,
@@ -16,14 +68,14 @@ SELECT
     WHEN c.client_type = 'individual' THEN COALESCE(u.name, 'Unknown Client')
     ELSE COALESCE(c.company_name, 'Unknown Company')
   END AS client_name,
-  p.due_date,
+  p.end_at,
   COALESCE(ts.total_tasks, 0) AS total_tasks,
   COALESCE(ts.completed_tasks, 0) AS completed_tasks,
   COALESCE(pf.freelancer_count, 0) AS freelancer_count,
   COALESCE(pf.avatars_csv, '') AS avatars_csv
 FROM projects p
 LEFT JOIN clients c ON c.id = p.client_id
-LEFT JOIN users u ON u.id = c.user_id
+LEFT JOIN users   u ON u.id = c.user_id
 LEFT JOIN (
   SELECT t.project_id,
          COUNT(*) AS total_tasks,
@@ -50,7 +102,6 @@ if ($projectId) {
   $params[] = $projectId;
   $types   .= "i";
 }
-
 $sql .= " ORDER BY p.due_date IS NULL, p.due_date ASC, p.id DESC";
 
 try {
@@ -68,8 +119,7 @@ try {
     $avatars = [];
     if (!empty($r['avatars_csv'])) {
       $split = array_unique(array_map('trim', explode(',', $r['avatars_csv'])));
-      $split = array_values(array_filter($split, fn($v) => $v !== '' && $v !== null));
-      $avatars = $split;
+      $avatars = array_values(array_filter($split, fn($v) => $v !== '' && $v !== null));
     }
     $top3 = array_slice($avatars, 0, 3);
     $extra = max(0, ((int)$r['freelancer_count']) - count($top3));
@@ -78,7 +128,7 @@ try {
       "project_id"         => (int)$r["project_id"],
       "project_title"      => $r["project_title"],
       "client_name"        => $r["client_name"],
-      "due_date"           => $r["due_date"],
+      "due_date"           => $r["end_at"],
       "total_tasks"        => $total,
       "completed_tasks"    => $completed,
       "progress_percent"   => $percent,
@@ -88,6 +138,8 @@ try {
     ];
   }
   $stmt->close();
+
+  // output (array or single if project_id given)
   echo json_encode($projectId ? ($out[0] ?? null) : $out, JSON_UNESCAPED_SLASHES);
 } catch (Throwable $e) {
   http_response_code(500);

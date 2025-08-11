@@ -12,20 +12,20 @@ if ($conn->connect_error) {
 
 try {
     $stmt = $conn->prepare("
-        SELECT 
-            projects.id,
-            projects.title,
-            projects.description,
-            projects.status,
-            projects.progress,
-            CASE 
-                WHEN clients.client_type = 'company' THEN clients.company_name
-                ELSE users.name
-            END AS client_name
-        FROM projects
-        LEFT JOIN clients ON projects.client_id = clients.id
-        LEFT JOIN users ON projects.client_id = users.id
-        ORDER BY projects.created_at DESC
+    SELECT
+    p.id,
+    p.title,
+    p.description,
+    p.status,
+    p.progress,
+    CASE
+        WHEN c.client_type = 'company' THEN c.company_name
+        ELSE u.name
+    END AS client_name
+    FROM projects AS p
+    LEFT JOIN clients AS c ON p.client_id = c.id
+    LEFT JOIN users   AS u ON c.user_id = u.id
+    ORDER BY p.created_at DESC;
     ");
     $stmt->execute();
     $result = $stmt->get_result();

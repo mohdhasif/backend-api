@@ -1,72 +1,68 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+require_once __DIR__ . '/db.php';
 
-// --- Dapatkan token & parse JSON body ---
-$headers = apache_request_headers();
-$authHeader = $headers['Authorization'] ?? '';
-$token = str_replace('Bearer ', '', $authHeader);
+$user = require_auth($conn);
 
-$input = json_decode(file_get_contents("php://input"), true);
+$input = json_decode(file_get_contents('php://input'), true);
 
-$project_id = $input['project_id'] ?? null;
-$title = $input['title'] ?? null;
-$description = $input['description'] ?? null;
-$status = $input['status'] ?? 'pending';
-$due_date = $input['due_date'] ?? null;
+$title       = trim($input['title'] ?? '');
+$description = trim($input['description'] ?? '');
+$status      = trim($input['status'] ?? 'pending');
+$due_date    = trim($input['due_date'] ?? '');               // 'YYYY-MM-DD' (optional, kekalkan)
+$start_at    = trim($input['start_at'] ?? '');               // 'YYYY-MM-DD HH:MM:SS'
+$end_at      = trim($input['end_at'] ?? '');                 // 'YYYY-MM-DD HH:MM:SS'
+$project_id  = (int)($input['project_id'] ?? 0);
 
-if (!$token || !$project_id || !$title || !$due_date) {
+if (!$title || $project_id <= 0) {
     http_response_code(400);
-    echo json_encode(['error' => 'Missing required fields']);
+    echo json_encode(['success' => false, 'error' => 'Sila isi Title dan pilih Project']);
     exit;
 }
 
-// --- Connect ke DB ---
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
+$allowed_status = ['pending', 'in_progress', 'completed'];
+if (!in_array($status, $allowed_status, true)) $status = 'pending';
+
+// Validasi start/end (jika diberi)
+if ($start_at && $end_at) {
+    if (strtotime($end_at) < strtotime($start_at)) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'error' => 'End time mesti selepas Start time']);
+        exit;
+    }
+}
+
+try {
+    // Pastikan project wujud & ambil client_id
+    $stmt = $conn->prepare("SELECT client_id FROM projects WHERE id = ?");
+    $stmt->bind_param("i", $project_id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    if (!$row) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'error' => 'Project tidak ditemui']);
+        exit;
+    }
+
+    $stmt2 = $conn->prepare("
+    INSERT INTO tasks
+      (project_id, title, description, status, due_date, start_at, end_at, created_at, updated_at)
+    VALUES
+      (?, ?, ?, ?, NULLIF(?, ''), NULLIF(?, ''), NULLIF(?, ''), NOW(), NOW())
+  ");
+    $stmt2->bind_param(
+        "issssss",
+        $project_id,
+        $title,
+        $description,
+        $status,
+        $due_date,
+        $start_at,
+        $end_at
+    );
+    $stmt2->execute();
+
+    echo json_encode(['success' => true, 'message' => 'Task berjaya ditambah', 'task_id' => $stmt2->insert_id]);
+} catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
-    exit;
-}
-
-// --- Sahkan token client ---
-$stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit;
-}
-
-$user = $result->fetch_assoc();
-$user_id = $user['id'];
-
-// --- Sahkan projek milik client ---
-$stmt = $conn->prepare("SELECT id FROM projects WHERE id = ? AND client_id = ?");
-$stmt->bind_param("ii", $project_id, $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    http_response_code(403);
-    echo json_encode(['error' => 'You do not own this project']);
-    exit;
-}
-
-// --- Insert task baru ---
-$stmt = $conn->prepare("
-    INSERT INTO tasks (project_id, title, description, status, due_date)
-    VALUES (?, ?, ?, ?, ?)
-");
-$stmt->bind_param("issss", $project_id, $title, $description, $status, $due_date);
-$success = $stmt->execute();
-
-if ($success) {
-    echo json_encode(['message' => 'Task created successfully', 'task_id' => $stmt->insert_id]);
-} else {
-    http_response_code(500);
-    echo json_encode(['error' => 'Failed to create task']);
+    echo json_encode(['success' => false, 'error' => 'Gagal menambah task']);
 }

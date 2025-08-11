@@ -1,18 +1,20 @@
 <?php
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Authorization, Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 
-// Nampakkan error sebenar dari mysqli
+// Tunjukkan error mysqli sebagai Exception
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {
     // --- Ambil token & project_id ---
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $headers    = function_exists('getallheaders') ? getallheaders() : [];
     $authHeader = $headers['Authorization'] ?? '';
-    $token = str_replace('Bearer ', '', $authHeader);
+    $token      = str_replace('Bearer ', '', $authHeader);
 
     $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : 0;
-    $status     = isset($_GET['status']) ? strtolower(trim($_GET['status'])) : null; // optional: pending|in_progress|completed
+    $status     = isset($_GET['status']) ? strtolower(trim($_GET['status'])) : null; // optional
 
     if (!$token || $project_id <= 0) {
         http_response_code(400);
@@ -34,23 +36,21 @@ try {
         echo json_encode(['success' => false, 'error' => 'Unauthorized']);
         exit;
     }
-    $userRow = $uidRes->fetch_assoc();
-    $auth_user_id = (int)$userRow['id'];
+    $auth_user_id = (int)$uidRes->fetch_assoc()['id'];
 
     // --- Build WHERE ---
-    $where   = ['t.project_id = ?'];
-    $params  = [$project_id];
-    $types   = 'i';
+    $where  = ['t.project_id = ?'];
+    $params = [$project_id];
+    $types  = 'i';
 
-    if ($status && in_array($status, ['pending','in_progress','completed'], true)) {
+    if ($status && in_array($status, ['pending', 'in_progress', 'completed'], true)) {
         $where[] = 't.status = ?';
         $params[] = $status;
         $types   .= 's';
     }
-
     $whereSql = 'WHERE ' . implode(' AND ', $where);
 
-    // --- Query UTAMA (sama macam tasks_all.php) ---
+    // --- Query utama (dibersihkan, tiada komen dalam SQL) ---
     $sql = "
         SELECT
             t.id              AS task_id,
@@ -80,12 +80,12 @@ try {
             fu.email          AS f_email
 
         FROM tasks t
-        LEFT JOIN projects p        ON p.id = t.project_id
-        LEFT JOIN users cu          ON cu.id = p.client_id
-        LEFT JOIN clients c         ON c.user_id = p.client_id
+        LEFT JOIN projects       p  ON p.id = t.project_id
+        LEFT JOIN clients        c  ON c.id = p.client_id
+        LEFT JOIN users          cu ON cu.id = c.user_id
         LEFT JOIN task_assignees ta ON ta.task_id = t.id
-        LEFT JOIN freelancers f     ON f.id = ta.freelancer_id
-        LEFT JOIN users fu          ON fu.id = f.user_id
+        LEFT JOIN freelancers    f  ON f.id = ta.freelancer_id
+        LEFT JOIN users          fu ON fu.id = f.user_id
         $whereSql
         ORDER BY t.created_at DESC, t.id DESC
     ";
@@ -101,6 +101,18 @@ try {
         $tid = (int)$row['task_id'];
 
         if (!isset($tasks[$tid])) {
+
+            $client_type = $row['client_type'] ?? null;
+            $display_name = null;
+            if ($client_type === 'company') {
+                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+            } elseif ($client_type === 'individual') {
+                $display_name = $row['client_user_name'] ?: ($row['client_company_name'] ?? null);
+            } else {
+                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+            }
+
+
             $tasks[$tid] = [
                 'id'          => $tid,
                 'project_id'  => (int)$row['t_project_id'],
@@ -117,28 +129,29 @@ try {
                 ],
                 'client'      => [
                     'user_id'      => isset($row['client_user_id']) ? (int)$row['client_user_id'] : null,
+                    'display_name' => $display_name,
                     'name'         => $row['client_user_name'] ?? null,
                     'client_type'  => $row['client_type'] ?? null,
                     'company_name' => $row['client_company_name'] ?? null,
                     'logo_url'     => $row['client_logo_url'] ?? null,
                 ],
-                'freelancers' => [], // akan dedupe bawah
+                'freelancers' => [],
             ];
         }
 
         // Tambah freelancers jika ada
         if (!empty($row['ta_freelancer_id']) || !empty($row['f_id'])) {
             $tasks[$tid]['freelancers'][] = [
-                'id'       => isset($row['f_id']) ? (int)$row['f_id'] : null,
-                'user_id'  => isset($row['f_user_id']) ? (int)$row['f_user_id'] : null,
-                'name'     => $row['f_name'] ?? null,
-                'email'    => $row['f_email'] ?? null,
-                'avatar'   => $row['f_avatar'] ?? null,
+                'id'      => isset($row['f_id']) ? (int)$row['f_id'] : null,
+                'user_id' => isset($row['f_user_id']) ? (int)$row['f_user_id'] : null,
+                'name'    => $row['f_name'] ?? null,
+                'email'   => $row['f_email'] ?? null,
+                'avatar'  => $row['f_avatar'] ?? null,
             ];
         }
     }
 
-    // Dedupe freelancers per task (ikut f_id + user_id)
+    // Dedupe freelancers per task
     $data = array_values(array_map(function ($t) {
         if (!empty($t['freelancers'])) {
             $seen = [];
@@ -158,10 +171,7 @@ try {
     echo json_encode(['success' => true, 'data' => $data], JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error'   => $e->getMessage(),
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
 } finally {
     if (isset($conn) && $conn instanceof mysqli) {
         $conn->close();

@@ -16,6 +16,10 @@ $logFile = __DIR__ . '/new_updated_client.log';
 $logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_POST['client_id'], true) . "\n\n";
 file_put_contents($logFile, $logContent, FILE_APPEND);
 
+$logFile = __DIR__ . '/new_uploaded_client_logo.log';
+$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_FILES, true) . "\n\n";
+file_put_contents($logFile, $logContent, FILE_APPEND);
+
 // Get form fields
 $client_id = $_POST['client_id'] ?? null;
 $company_name = $_POST['company_name'] ?? '';
@@ -37,7 +41,7 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 
     $logo_url = $domain . '/' . $relativePath;
     if (move_uploaded_file($logo['tmp_name'], $path)) {
-        echo json_encode(['success' => true, 'message' => 'Logo uploaded successfully', 'path' => $path]);
+        // echo json_encode(['success' => true, 'message' => 'Logo uploaded successfully', 'path' => $path]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Failed to move uploaded file']);
     }

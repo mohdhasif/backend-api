@@ -1,0 +1,11 @@
+PHP Fatal error:  Uncaught mysqli_sql_exception: Expression #1 of ORDER BY clause is not in SELECT list, references column 'finiteapp.user_prayer_settings.updated_at' which is not in SELECT list; this is incompatible with DISTINCT in C:\backend-api\cron_prayer_health.php:54
+Stack trace:
+#0 C:\backend-api\cron_prayer_health.php(54): mysqli->query('\r\n  SELECT DIST...')
+#1 {main}
+  thrown in C:\backend-api\cron_prayer_health.php on line 54
+
+Fatal error: Uncaught mysqli_sql_exception: Expression #1 of ORDER BY clause is not in SELECT list, references column 'finiteapp.user_prayer_settings.updated_at' which is not in SELECT list; this is incompatible with DISTINCT in C:\backend-api\cron_prayer_health.php:54
+Stack trace:
+#0 C:\backend-api\cron_prayer_health.php(54): mysqli->query('\r\n  SELECT DIST...')
+#1 {main}
+  thrown in C:\backend-api\cron_prayer_health.php on line 54

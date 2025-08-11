@@ -40,7 +40,7 @@ try {
     $params = [];
     $types  = '';
 
-    if ($status && in_array($status, ['pending','in_progress','completed'], true)) {
+    if ($status && in_array($status, ['pending', 'in_progress', 'completed'], true)) {
         $where[] = 't.status = ?';
         $params[] = $status;
         $types   .= 's';
@@ -90,42 +90,45 @@ try {
 
     // FULL query (with joins)
     $sql = "
-        SELECT
-            t.id               AS task_id,
-            t.project_id       AS t_project_id,
-            t.title            AS t_title,
-            t.description      AS t_description,
-            t.status           AS t_status,
-            t.due_date         AS t_due_date,
-            t.created_at       AS t_created_at,
-            t.updated_at       AS t_updated_at,
+    SELECT
+        t.id               AS task_id,
+        t.project_id       AS t_project_id,
+        t.title            AS t_title,
+        t.description      AS t_description,
+        t.status           AS t_status,
+        t.due_date         AS t_due_date,
+        t.start_at         AS t_start_at,
+        t.end_at           AS t_end_at,
+        t.created_at       AS t_created_at,
+        t.updated_at       AS t_updated_at,
 
-            p.id               AS p_id,
-            p.title            AS p_title,
+        p.id               AS p_id,
+        p.title            AS p_title,
 
-            cu.id              AS client_user_id,
-            cu.name            AS client_user_name,
-            c.client_type      AS client_type,
-            c.company_name     AS client_company_name,
-            c.logo_url         AS client_logo_url,
+        c.id               AS c_id,
+        c.client_type      AS client_type,
+        c.company_name     AS client_company_name,
+        c.logo_url         AS client_logo_url,
+        cu.id              AS client_user_id,
+        cu.name            AS client_user_name,
 
-            ta.freelancer_id   AS ta_freelancer_id,
-            f.id               AS f_id,
-            f.user_id          AS f_user_id,
-            f.avatar_url           AS f_avatar,
-            fu.name            AS f_name,
-            fu.email           AS f_email
+        ta.freelancer_id   AS ta_freelancer_id,
+        f.id               AS f_id,
+        f.user_id          AS f_user_id,
+        f.avatar_url       AS f_avatar,
+        fu.name            AS f_name,
+        fu.email           AS f_email
 
-        FROM tasks t
-        LEFT JOIN projects p        ON p.id = t.project_id
-        LEFT JOIN users cu          ON cu.id = p.client_id        -- NOTE: pastikan p.client_id = users.id
-        LEFT JOIN clients c         ON c.user_id = p.client_id    -- NOTE: pastikan clients.user_id wujud
-        LEFT JOIN task_assignees ta ON ta.task_id = t.id
-        LEFT JOIN freelancers f     ON f.id = ta.freelancer_id
-        LEFT JOIN users fu          ON fu.id = f.user_id
-        $whereSql
-        ORDER BY t.created_at DESC, t.id DESC
-    ";
+    FROM tasks t
+    LEFT JOIN projects p   ON p.id = t.project_id
+    LEFT JOIN clients  c   ON c.id = p.client_id
+    LEFT JOIN users    cu  ON cu.id = c.user_id
+    LEFT JOIN task_assignees ta ON ta.task_id = t.id
+    LEFT JOIN freelancers f     ON f.id = ta.freelancer_id
+    LEFT JOIN users fu          ON fu.id = f.user_id
+    $whereSql
+    ORDER BY t.created_at DESC, t.id DESC
+";
 
     $stmt = $conn->prepare($sql); // if any column/table missing, this will now throw with details
     if (!empty($params)) $stmt->bind_param($types, ...$params);
@@ -138,11 +141,14 @@ try {
 
         if (!isset($tasks[$tid])) {
             $client_type = $row['client_type'] ?? null;
-            $display_name = $client_type === 'company'
-                ? ($row['client_company_name'] ?? $row['client_user_name'])
-                : ($client_type === 'individual'
-                    ? ($row['client_user_name'] ?? $row['client_company_name'])
-                    : ($row['client_company_name'] ?: $row['client_user_name']));
+            $display_name = null;
+            if ($client_type === 'company') {
+                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+            } elseif ($client_type === 'individual') {
+                $display_name = $row['client_user_name'] ?: ($row['client_company_name'] ?? null);
+            } else {
+                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+            }
 
             $tasks[$tid] = [
                 'id'          => $tid,

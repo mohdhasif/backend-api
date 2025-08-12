@@ -29,7 +29,7 @@ function require_auth(mysqli $conn): array {
     exit;
   }
 
-  $stmt = $conn->prepare("SELECT id, name, email, role FROM users WHERE token = ? LIMIT 1");
+  $stmt = $conn->prepare("SELECT id, name, email, role, avatar_url FROM users WHERE token = ? LIMIT 1");
   $stmt->bind_param("s", $token);
   $stmt->execute();
   $res = $stmt->get_result();

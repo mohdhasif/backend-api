@@ -1,0 +1,12 @@
+[2025-08-11 18:26:15] get_admin_user_ids (role-based) {"ids":[1],"sql_err":null}
+[2025-08-11 18:26:15] notify_admins recipients [1]
+[2025-08-11 18:26:15] insert_notification ok {"user_id":1,"id":9,"title":"Task created","type":"project_created","data":{"task_id":27}}
+[2025-08-11 18:26:15] get_user_subscription_ids {"user_id":1,"count":1,"ids":["eb1e78f9-ec13-4e46-97cc-cdc57a0e3c64"]}
+* Host onesignal.com:443 was resolved.
+* IPv6: 2606:4700::6810:a091, 2606:4700::6811:6fdf
+* IPv4: 104.17.111.223, 104.16.160.145
+*   Trying [2606:4700::6810:a091]:443...
+* ALPN: curl offers h2,http/1.1
+* SSL certificate problem: unable to get local issuer certificate
+* closing connection #0
+[2025-08-11 18:26:15] onesignal request {"http":0,"errno":60,"error":"SSL certificate problem: unable to get local issuer certificate","payload":{"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["eb1e78f9-ec13-4e46-97cc-cdc57a0e3c64"],"headings":{"en":"Task created"},"contents":{"en":"Task \"Tesssst oo\" has been created (ID #27)."},"data":{"task_id":27},"ios_badgeType":"Increase","ios_badgeCount":1}}

@@ -38,24 +38,31 @@ if ($result->num_rows === 0) {
 $user = $result->fetch_assoc();
 $user_id = $user['id'];
 
-// --- Pastikan task itu milik client ---
+// --- Ambil task details (tanpa tapis client) ---
 $query = "
-SELECT t.id, t.title, t.description, t.status, t.due_date, t.project_id
+SELECT 
+    t.id,
+    t.title,
+    t.description,
+    t.status,
+    t.due_date,
+    t.project_id,
+    p.title AS project_title
 FROM tasks t
 JOIN projects p ON t.project_id = p.id
-WHERE t.id = ? AND p.client_id = ?
+WHERE t.id = ?
 ";
 
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ii", $task_id, $user_id);
+$stmt->bind_param("i", $task_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Task not found or not your project']);
+    http_response_code(404);
+    echo json_encode(['error' => 'Task not found']);
     exit;
 }
 
 $task = $result->fetch_assoc();
-echo json_encode($task);
+echo json_encode($task, JSON_UNESCAPED_UNICODE);

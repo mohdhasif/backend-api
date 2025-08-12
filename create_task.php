@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/notifications_helper.php';
+
 
 $user = require_auth($conn);
 
@@ -60,6 +62,15 @@ try {
         $end_at
     );
     $stmt2->execute();
+
+    $lastId = $conn->insert_id; // integer, ID auto_increment terakhir
+
+    // Notifikasi ke ADMIN
+    $notifTitle = "Task created";
+    $notifBody  = "Task \"$title\" has been created (ID #$lastId).";
+    $data = ['task_id' => $lastId];
+
+    notify_admins($conn, $notifTitle, $notifBody, 'project_created', $data, true);
 
     echo json_encode(['success' => true, 'message' => 'Task berjaya ditambah', 'task_id' => $stmt2->insert_id]);
 } catch (Throwable $e) {

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/notifications_helper.php';
+// require_once __DIR__ . '/notifications_helper.php';
+require_once __DIR__ . '/push_helper.php';
 
 
 $user = require_auth($conn);
@@ -70,7 +71,29 @@ try {
     $notifBody  = "Task \"$title\" has been created (ID #$lastId).";
     $data = ['task_id' => $lastId];
 
-    notify_admins($conn, $notifTitle, $notifBody, 'project_created', $data, true);
+    // notify_admins($conn, $notifTitle, $notifBody, 'project_created', $data, true);
+
+    // Contoh: nak hantar push kepada user_id = 10
+    // Ambil semua admin user_id
+    $adminIds = [];
+    $stmt = $conn->prepare("SELECT id FROM users WHERE role = 'admin'");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    while ($row = $res->fetch_assoc()) {
+        $adminIds[] = (int)$row['id'];
+    }
+    $stmt->close();
+
+    // Sediakan payload notifikasi
+    $title = $notifTitle;
+    $body  = "Task \"$title\" has been created (ID #$lastId).";
+    $data  = [
+        'type' => 'task_created',
+        'task_id' => $lastId
+    ];
+
+    // Hantar push kepada semua admin
+    $result = notify_users($conn, $adminIds, $title, $body, $data, 'task_created');
 
     echo json_encode(['success' => true, 'message' => 'Task berjaya ditambah', 'task_id' => $stmt2->insert_id]);
 } catch (Throwable $e) {

@@ -1,0 +1,2 @@
+[2025-08-12 06:48:00] Sending to player_ids: ["c73bf707-3d29-4a60-b241-e8161138eee1","eb1e78f9-ec13-4e46-97cc-cdc57a0e3c64"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["c73bf707-3d29-4a60-b241-e8161138eee1","eb1e78f9-ec13-4e46-97cc-cdc57a0e3c64"],"headings":{"en":"Task created"},"contents":{"en":"Task \"Task created\" has been created (ID #30)."},"data":{"type":"task_created","task_id":30}}
+[2025-08-12 06:48:00] HTTP 200 | Error:  | Response: {"id":"4198a729-4040-428d-9645-c6400198ef10","external_id":null}

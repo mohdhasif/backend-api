@@ -126,7 +126,7 @@ function generateClientLogo($text, $clientId) {
     imagepng($image, $filepath);
     imagedestroy($image);
 
-    $baseUrl = "https://fd9315becb7e.ngrok-free.app/uploads/logos/"; // ganti ikut domain sebenar anda
+    $baseUrl = "/uploads/logos/"; // ganti ikut domain sebenar anda
     return $baseUrl . $filename;
 }
 

@@ -4,6 +4,7 @@ header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 
 require_once __DIR__ . '/db.php'; // gunakan db.php anda
+require_once __DIR__ . '/push_helper.php';
 
 try {
   // ✅ Auth
@@ -62,21 +63,45 @@ try {
   $end_at_val   = $end_at ? $end_at : null;
   $due_date_val = $due_date ? $due_date : null;
 
-$stmt->bind_param(
-  'issssssis',
-  $client_id,
-  $title,
-  $description,
-  $priority,
-  $start_at_val,
-  $end_at_val,
-  $status,
-  $progress,
-  $due_date_val
-);
+  $stmt->bind_param(
+    'issssssis',
+    $client_id,
+    $title,
+    $description,
+    $priority,
+    $start_at_val,
+    $end_at_val,
+    $status,
+    $progress,
+    $due_date_val
+  );
 
   $stmt->execute();
   $newId = $stmt->insert_id;
+
+  $notifTitle = "Project created";
+  $notifBody  = "Project \"$title\" has been created (ID #$newId).";
+  $data = ['project_id' => $newId];
+
+  $adminIds = [];
+  $stmt = $conn->prepare("SELECT id FROM users WHERE role = 'admin'");
+  $stmt->execute();
+  $res = $stmt->get_result();
+  while ($row = $res->fetch_assoc()) {
+    $adminIds[] = (int)$row['id'];
+  }
+  $stmt->close();
+
+  // Sediakan payload notifikasi
+  $title = $notifTitle;
+  $body  = "Project \"$title\" has been created (ID #$newId).";
+  $data  = [
+    'type' => 'project_created',
+    'project_id' => $newId
+  ];
+
+  // Hantar push kepada semua admin
+  $result = notify_users($conn, $adminIds, $title, $body, $data, 'task_created');
 
   echo json_encode(['success' => true, 'id' => $newId]);
 } catch (Throwable $e) {

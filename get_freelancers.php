@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-$base_url = 'https://fd9315becb7e.ngrok-free.app/uploads/avatars/';
+$base_url = '/uploads/avatars/';
 $default_avatar = $base_url . 'avatars.png';
 
 $sql = "

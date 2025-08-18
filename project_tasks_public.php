@@ -1,41 +1,19 @@
 <?php
-header("Content-Type: application/json; charset=utf-8");
-header("Access-Control-Allow-Origin: *");
+require_once __DIR__ . '/db.php'; // pastikan include db.php
+
+$user = auth_user($conn);              // <-- pusat
+$auth_user_id = (int)$user['id'];
 
 try {
-    // --- Dapatkan token & project_id ---
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
-    $authHeader = $headers['Authorization'] ?? '';
-    $token = str_replace('Bearer ', '', $authHeader);
-
     $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : 0;
 
-    if (!$token || $project_id <= 0) {
+    if (!$project_id) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Missing token or project_id']);
+        echo json_encode(['success' => false, 'error' => 'Missing project_id']);
         exit;
     }
 
-    // --- Connect ke DB ---
-    $conn = new mysqli("localhost", "root", "", "finiteapp");
-    if ($conn->connect_error) {
-        throw new Exception("Database connection failed");
-    }
-
-    // --- Cari user berdasarkan token ---
-    $stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
-    $stmt->bind_param("s", $token);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 0) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-        exit;
-    }
-
-    $user = $result->fetch_assoc();
-    $user_id = (int)$user['id'];
+    $user_id = $auth_user_id;
 
     // --- Sahkan user adalah owner projek ini ---
     $stmt = $conn->prepare("SELECT id FROM projects WHERE id = ? AND client_id = ?");
@@ -70,7 +48,6 @@ try {
         'success' => true,
         'data' => $tasks
     ], JSON_UNESCAPED_UNICODE);
-
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([

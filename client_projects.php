@@ -1,41 +1,10 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+require_once __DIR__ . '/db.php'; // pastikan include db.php
 
-// --- Connect ke DB awal-awal dan set charset ---
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
-    exit;
-}
-$conn->set_charset("utf8mb4");
+$user = auth_user($conn);              // <-- pusat
+$auth_user_id = (int)$user['id'];
 
-// --- Ambil token dari header ---
-$headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
-$authHeader = $headers['Authorization'] ?? '';
-$token = str_replace('Bearer ', '', $authHeader);
-
-if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No token provided']);
-    exit;
-}
-
-// --- Dapatkan user ID berdasarkan token ---
-$stmt = $conn->prepare("SELECT id FROM users WHERE token = ? LIMIT 1");
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
-if (!$user) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit;
-}
-
-$user_id = $user['id'];
+$user_id = $auth_user_id;
 
 // --- Ambil projek berdasarkan client_id ---
 $stmt = $conn->prepare("

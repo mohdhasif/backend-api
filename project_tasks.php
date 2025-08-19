@@ -1,56 +1,62 @@
 <?php
-header("Content-Type: application/json; charset=utf-8");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Authorization, Content-Type");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
+require_once __DIR__ . '/db.php'; // include helper & $conn
 
-// Tunjukkan error mysqli sebagai Exception
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+header('Content-Type: application/json; charset=utf-8');
 
 try {
-    // --- Ambil token & project_id ---
-    $headers    = function_exists('getallheaders') ? getallheaders() : [];
-    $authHeader = $headers['Authorization'] ?? '';
-    $token      = str_replace('Bearer ', '', $authHeader);
+    // --- Auth & role ---
+    $user = require_auth($conn);
+    $auth_user_id = (int)($user['id'] ?? 0);
+    $role = strtolower((string)($user['role'] ?? ''));
 
+    // --- Inputs ---
     $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : 0;
-    $status     = isset($_GET['status']) ? strtolower(trim($_GET['status'])) : null; // optional
+    $status     = isset($_GET['status']) ? strtolower(trim((string)$_GET['status'])) : null; // optional
 
-    if (!$token || $project_id <= 0) {
+    if ($project_id <= 0) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Missing token or project_id']);
+        echo json_encode(['success' => false, 'error' => 'Missing project_id'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // --- DB connect ---
-    $conn = new mysqli("localhost", "root", "", "finiteapp");
-    $conn->set_charset("utf8mb4");
-
-    // --- Auth by token ---
-    $stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
-    $stmt->bind_param("s", $token);
-    $stmt->execute();
-    $uidRes = $stmt->get_result();
-    if ($uidRes->num_rows === 0) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-        exit;
-    }
-    $auth_user_id = (int)$uidRes->fetch_assoc()['id'];
-
-    // --- Build WHERE ---
-    $where  = ['t.project_id = ?'];
+    // --- Build WHERE & params ---
+    $where  = ['t.project_id = ?']; // asas: ikut projek
     $params = [$project_id];
     $types  = 'i';
 
-    if ($status && in_array($status, ['pending', 'in_progress', 'completed'], true)) {
-        $where[] = 't.status = ?';
+    // Filter status jika valid
+    $allowedStatus = ['pending', 'in_progress', 'completed'];
+    if ($status && in_array($status, $allowedStatus, true)) {
+        $where[]  = 't.status = ?';
         $params[] = $status;
         $types   .= 's';
     }
+
+    /**
+     * Access control ikut role
+     * admin      : tiada tambahan
+     * client     : hanya projek milik client tersebut (clients.user_id = auth_user_id)
+     * freelancer : hanya task yang di-assign kepada freelancer ini (freelancers.user_id = auth_user_id)
+     */
+    if ($role === 'client') {
+        // projek mesti milik client ini
+        $where[]  = 'c.user_id = ?';
+        $params[] = $auth_user_id;
+        $types   .= 'i';
+    } elseif ($role === 'freelancer') {
+        // task mesti assign kepada freelancer ini (match melalui freelancers.user_id)
+        $where[]  = 'f.user_id = ?';
+        $params[] = $auth_user_id;
+        $types   .= 'i';
+    } else {
+        // default admin / lain-lain: tiada sekatan tambahan
+        // Boleh tambah require_role jika nak ketatkan:
+        // require_role($user, ['admin']);
+    }
+
     $whereSql = 'WHERE ' . implode(' AND ', $where);
 
-    // --- Query utama (dibersihkan, tiada komen dalam SQL) ---
+    // --- Query utama ---
     $sql = "
         SELECT
             t.id              AS task_id,
@@ -91,6 +97,9 @@ try {
     ";
 
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception('Failed to prepare statement');
+    }
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $rs = $stmt->get_result();
@@ -101,17 +110,19 @@ try {
         $tid = (int)$row['task_id'];
 
         if (!isset($tasks[$tid])) {
+            // Tentukan display_name (ikut client_type)
+            $client_type   = $row['client_type'] ?? null;
+            $display_name  = null;
+            $company_name  = $row['client_company_name'] ?? null;
+            $client_uname  = $row['client_user_name'] ?? null;
 
-            $client_type = $row['client_type'] ?? null;
-            $display_name = null;
             if ($client_type === 'company') {
-                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+                $display_name = $company_name ?: $client_uname;
             } elseif ($client_type === 'individual') {
-                $display_name = $row['client_user_name'] ?: ($row['client_company_name'] ?? null);
+                $display_name = $client_uname ?: $company_name;
             } else {
-                $display_name = $row['client_company_name'] ?: ($row['client_user_name'] ?? null);
+                $display_name = $company_name ?: $client_uname;
             }
-
 
             $tasks[$tid] = [
                 'id'          => $tid,
@@ -130,9 +141,9 @@ try {
                 'client'      => [
                     'user_id'      => isset($row['client_user_id']) ? (int)$row['client_user_id'] : null,
                     'display_name' => $display_name,
-                    'name'         => $row['client_user_name'] ?? null,
-                    'client_type'  => $row['client_type'] ?? null,
-                    'company_name' => $row['client_company_name'] ?? null,
+                    'name'         => $client_uname,
+                    'client_type'  => $client_type,
+                    'company_name' => $company_name,
                     'logo_url'     => $row['client_logo_url'] ?? null,
                 ],
                 'freelancers' => [],

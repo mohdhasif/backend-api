@@ -2,34 +2,9 @@
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 
-// 1) Make mysqli throw exceptions so we see real errors
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+require_once __DIR__ . '/db.php'; // pastikan include db.php
 
 try {
-    // --- Token sahaja wajib ---
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
-    $authHeader = $headers['Authorization'] ?? '';
-    $token = str_replace('Bearer ', '', $authHeader);
-
-    if (!$token) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Missing token']);
-        exit;
-    }
-
-    $conn = new mysqli("localhost", "root", "", "finiteapp");
-    $conn->set_charset("utf8mb4");
-
-    // --- Auth by token ---
-    $stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
-    $stmt->bind_param("s", $token);
-    $stmt->execute();
-    $uidRes = $stmt->get_result();
-    if ($uidRes->num_rows === 0) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-        exit;
-    }
 
     // --- Filters (optional) ---
     $status     = isset($_GET['status']) ? strtolower(trim($_GET['status'])) : null; // pending|in_progress|completed

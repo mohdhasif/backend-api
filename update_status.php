@@ -1,7 +1,4 @@
 <?php
-// api/tasks/update_status.php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Authorization, Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 
@@ -12,20 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once __DIR__ . '/db.php'; // $conn = new mysqli(...)
 
-// --- Read headers & auth ---
-$headers = function_exists('getallheaders') ? getallheaders() : [];
-$authHeader = $headers['Authorization'] ?? '';
-$token = trim(str_replace('Bearer', '', $authHeader));
-$token = preg_replace('/^\\s+|\\s+$/', '', $token);
-
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 try {
-    if (!$token) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Missing token']);
-        exit;
-    }
     if ($id <= 0) {
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Missing id']);
@@ -43,18 +29,10 @@ try {
         exit;
     }
 
-    // Auth by token
-    $stmt = $conn->prepare("SELECT id FROM users WHERE token = ?");
-    $stmt->bind_param("s", $token);
-    $stmt->execute();
-    $userRes = $stmt->get_result();
-    if ($userRes->num_rows === 0) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-        exit;
-    }
-    $user = $userRes->fetch_assoc();
-    $userId = intval($user['id']);
+    $user = auth_user($conn);              // <-- pusat
+    $auth_user_id = (int)$user['id'];
+
+    $userId = $auth_user_id;
 
     // Update task status
     if ($status === 'completed') {

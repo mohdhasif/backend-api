@@ -34,6 +34,8 @@ try {
         WHERE project_id = ?
         ORDER BY due_date ASC
     ");
+
+    
     $stmt->bind_param("i", $project_id);
     $stmt->execute();
     $result = $stmt->get_result();

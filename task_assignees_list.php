@@ -1,13 +1,7 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
 
 try {
     require_once __DIR__ . '/db.php';
-
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
-    $auth = $headers['Authorization'] ?? '';
-    $token = str_replace('Bearer ', '', $auth);
 
     $task_id = intval($_GET['task_id'] ?? 0);
     if (!$token || $task_id <= 0) {
@@ -17,15 +11,6 @@ try {
     }
 
     $conn->set_charset('utf8mb4');
-
-    $u = $conn->prepare("SELECT id FROM users WHERE token=?");
-    $u->bind_param("s", $token);
-    $u->execute();
-    if (!$u->get_result()->fetch_assoc()) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-        exit;
-    }
 
     $sql = "SELECT 
                 ta.freelancer_id AS id, 

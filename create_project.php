@@ -83,6 +83,7 @@ try {
   $notifBody  = "Project \"$title\" has been created (ID #$newId).";
   $data = ['project_id' => $newId];
 
+  // Get admin IDs
   $adminIds = [];
   $stmt = $conn->prepare("SELECT id FROM users WHERE role = 'admin'");
   $stmt->execute();
@@ -92,7 +93,18 @@ try {
   }
   $stmt->close();
 
-  // Sediakan payload notifikasi
+  // Get client ID (the project owner)
+  $clientUserId = null;
+  $stmt = $conn->prepare("SELECT user_id FROM clients WHERE id = ?");
+  $stmt->bind_param("i", $client_id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  if ($row = $res->fetch_assoc()) {
+    $clientUserId = (int)$row['user_id'];
+  }
+  $stmt->close();
+
+  // Prepare notification payload
   $title = $notifTitle;
   $body  = "Project \"$title\" has been created (ID #$newId).";
   $data  = [
@@ -100,8 +112,13 @@ try {
     'project_id' => $newId
   ];
 
-  // Hantar push kepada semua admin
-  $result = notify_users($conn, $adminIds, $title, $body, $data, 'task_created');
+  // Send notifications to admins AND the client
+  $allUserIds = $adminIds;
+  if ($clientUserId && !in_array($clientUserId, $allUserIds)) {
+    $allUserIds[] = $clientUserId;
+  }
+
+  $result = notify_users($conn, $allUserIds, $title, $body, $data, 'task_created');
 
   echo json_encode(['success' => true, 'id' => $newId]);
 } catch (Throwable $e) {

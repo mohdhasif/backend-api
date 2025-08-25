@@ -66,15 +66,7 @@ try {
 
     $lastId = $conn->insert_id; // integer, ID auto_increment terakhir
 
-    // Notifikasi ke ADMIN
-    $notifTitle = "Task created";
-    $notifBody  = "Task \"$title\" has been created (ID #$lastId).";
-    $data = ['task_id' => $lastId];
-
-    // notify_admins($conn, $notifTitle, $notifBody, 'project_created', $data, true);
-
-    // Contoh: nak hantar push kepada user_id = 10
-    // Ambil semua admin user_id
+    // Get admin IDs
     $adminIds = [];
     $stmt = $conn->prepare("SELECT id FROM users WHERE role = 'admin'");
     $stmt->execute();
@@ -84,16 +76,35 @@ try {
     }
     $stmt->close();
 
-    // Sediakan payload notifikasi
-    $title = $notifTitle;
-    $body  = "Task \"$title\" has been created (ID #$lastId).";
-    $data  = [
+    // Get client ID (the project owner)
+    $clientUserId = null;
+    $stmt = $conn->prepare("SELECT c.user_id FROM clients c 
+                           INNER JOIN projects p ON c.id = p.client_id 
+                           WHERE p.id = ?");
+    $stmt->bind_param("i", $project_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($row = $res->fetch_assoc()) {
+        $clientUserId = (int)$row['user_id'];
+    }
+    $stmt->close();
+
+    // Prepare notification payload
+    $notifTitle = "Task created";
+    $notifBody  = "Task \"$title\" has been created (ID #$lastId).";
+    $data = [
         'type' => 'task_created',
-        'task_id' => $lastId
+        'task_id' => $lastId,
+        'project_id' => $project_id
     ];
 
-    // Hantar push kepada semua admin
-    $result = notify_users($conn, $adminIds, $title, $body, $data, 'task_created');
+    // Send notifications to admins AND the client
+    $allUserIds = $adminIds;
+    if ($clientUserId && !in_array($clientUserId, $allUserIds)) {
+        $allUserIds[] = $clientUserId;
+    }
+
+    $result = notify_users($conn, $allUserIds, $notifTitle, $notifBody, $data, 'task_created');
 
     echo json_encode(['success' => true, 'message' => 'Task berjaya ditambah', 'task_id' => $stmt2->insert_id]);
 } catch (Throwable $e) {

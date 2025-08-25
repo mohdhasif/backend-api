@@ -39,7 +39,8 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 
     $relativePath = $uploadDir . basename($logo['name']);
 
-    $logo_url = $domain . '/' . $relativePath;
+    // $logo_url = $domain . '/' . $relativePath;
+    $logo_url = '/' . $relativePath;
     if (move_uploaded_file($logo['tmp_name'], $path)) {
         // echo json_encode(['success' => true, 'message' => 'Logo uploaded successfully', 'path' => $path]);
     } else {

@@ -1,8 +1,8 @@
 <?php
 /**
- * cron_prayer_push_role_based.php
- * - Admin: Multiple devices = All devices get notifications
- * - Client/Freelancer: Multiple devices = Only latest device gets notification
+ * cron_prayer_push_subscription_fixed.php
+ * - Groups by subscription_id to prevent multiple notifications per device
+ * - Handles multiple install_ids for same phone
  */
 
 require_once __DIR__ . '/db.php'; // $conn (mysqli)
@@ -138,58 +138,39 @@ function same_minute_epoch(int $a, int $b): bool {
   return intdiv($a, 60) === intdiv($b, 60);
 }
 
-// ===== Get user role =====
-function get_user_role($conn, $userId): string {
-  if (!$userId) return 'guest';
-  
-  $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
-  $stmt->bind_param("i", $userId);
-  $stmt->execute();
-  $result = $stmt->get_result()->fetch_assoc();
-  
-  return $result ? $result['role'] : 'guest';
-}
-
-// ===== Main logic: Role-based device handling =====
+// ===== Main logic: Group by subscription_id to prevent duplicates =====
 $sql = "
 SELECT 
   ups.subscription_id,
-  ups.user_id,
-  ups.install_id,
+  -- Group by subscription_id, take the first user_id and install_id
+  MAX(ups.user_id) as user_id,
+  MAX(ups.install_id) as install_id,
   -- Priority: user settings > install settings > default
   COALESCE(
-    (SELECT method FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
-    (SELECT method FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1),
+    (SELECT method FROM user_prayer_settings WHERE user_id = MAX(ups.user_id) LIMIT 1),
+    (SELECT method FROM user_prayer_settings WHERE install_id = MAX(ups.install_id) LIMIT 1),
     'GPS'
   ) AS method,
   COALESCE(
-    (SELECT latitude FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
-    (SELECT latitude FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1)
+    (SELECT latitude FROM user_prayer_settings WHERE user_id = MAX(ups.user_id) LIMIT 1),
+    (SELECT latitude FROM user_prayer_settings WHERE install_id = MAX(ups.install_id) LIMIT 1)
   ) AS latitude,
   COALESCE(
-    (SELECT longitude FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
-    (SELECT longitude FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1)
+    (SELECT longitude FROM user_prayer_settings WHERE user_id = MAX(ups.user_id) LIMIT 1),
+    (SELECT longitude FROM user_prayer_settings WHERE install_id = MAX(ups.install_id) LIMIT 1)
   ) AS longitude,
   COALESCE(
-    (SELECT jakim_zone FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
-    (SELECT jakim_zone FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1)
+    (SELECT jakim_zone FROM user_prayer_settings WHERE user_id = MAX(ups.user_id) LIMIT 1),
+    (SELECT jakim_zone FROM user_prayer_settings WHERE install_id = MAX(ups.install_id) LIMIT 1)
   ) AS jakim_zone,
   COALESCE(
-    (SELECT enabled FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
-    (SELECT enabled FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1),
+    (SELECT enabled FROM user_prayer_settings WHERE user_id = MAX(ups.user_id) LIMIT 1),
+    (SELECT enabled FROM user_prayer_settings WHERE install_id = MAX(ups.install_id) LIMIT 1),
     1
-  ) AS enabled,
-  -- For non-admin users, only get the latest device
-  CASE 
-    WHEN ups.user_id IS NOT NULL THEN (
-      SELECT MAX(ups2.id) 
-      FROM user_push_subscriptions ups2 
-      WHERE ups2.user_id = ups.user_id
-    )
-    ELSE ups.id
-  END as latest_device_id
+  ) AS enabled
 FROM user_push_subscriptions ups
 WHERE ups.subscription_id IS NOT NULL
+GROUP BY ups.subscription_id
 ";
 
 $res  = $conn->query($sql);
@@ -203,16 +184,6 @@ foreach ($subs as $r) {
   $checked++;
 
   if ((int)($r['enabled'] ?? 1) !== 1) continue;
-
-  // For non-admin users, only process the latest device
-  if ($r['user_id']) {
-    $userRole = get_user_role($conn, $r['user_id']);
-    
-    // If not admin and not the latest device, skip
-    if ($userRole !== 'admin' && $r['id'] != $r['latest_device_id']) {
-      continue;
-    }
-  }
 
   $method = strtoupper((string)($r['method'] ?? 'GPS'));
   $times  = null;

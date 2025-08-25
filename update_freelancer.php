@@ -60,7 +60,8 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     if (move_uploaded_file($avatar['tmp_name'], $path)) {
         $domain = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
         $domain .= "://" . $_SERVER['HTTP_HOST'];
-        $avatar_url = $domain . '/' . $path;
+        // $avatar_url = $domain . '/' . $path;
+        $avatar_url = '/' . $path;
     } else {
         echo json_encode(['success' => false, 'error' => 'Failed to move uploaded avatar']);
         exit;

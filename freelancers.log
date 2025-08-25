@@ -355,3 +355,165 @@ Array
 )
 
 
+2025-08-25 11:58:54 - Received Data:
+Array
+(
+    [name] => jay
+    [email] => jay@example.com
+    [phone] => 1
+    [portfolio] => testing
+    [roles] => Array
+        (
+            [0] => Video
+            [1] => Copywriter
+            [2] => Content Strategies
+        )
+
+)
+
+
+2025-08-25 12:08:07 - Received Data:
+Array
+(
+    [name] => jayyy
+    [email] => yey@example.com
+    [phone] => 011
+    [portfolio] => test
+    [roles] => Array
+        (
+            [0] => Video
+            [1] => Copywriter
+            [2] => 2D / 3D Designer
+        )
+
+)
+
+
+Freelancer saved & email sent
+
+2025-08-25 12:10:40 - Received Data:
+Array
+(
+    [name] => ter
+    [email] => ter@example.com
+    [phone] => 122
+    [portfolio] => yes
+    [roles] => Array
+        (
+            [0] => Graphic Designer
+            [1] => Video
+            [2] => Copywriter
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 12:15:12 - Received Data:
+Array
+(
+    [name] => has
+    [email] => has@example.com
+    [phone] => 11
+    [portfolio] => wwewe
+    [roles] => Array
+        (
+            [0] => 2D / 3D Designer
+            [1] => Content Strategies
+            [2] => Photographer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 12:21:52 - Received Data:
+Array
+(
+    [name] => kay
+    [email] => kay@example.com
+    [phone] => 11
+    [portfolio] => wewewe
+    [roles] => Array
+        (
+            [0] => Video
+            [1] => Graphic Designer
+            [2] => Copywriter
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 12:26:17 - Received Data:
+Array
+(
+    [name] => wee
+    [email] => wee@example.com
+    [phone] => 11212
+    [portfolio] => wewew
+    [roles] => Array
+        (
+            [0] => Multimedia Designer
+            [1] => 2D / 3D Designer
+            [2] => Copywriter
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 12:29:11 - Received Data:
+Array
+(
+    [name] => yyy
+    [email] => yyy@example.com
+    [phone] => 1222
+    [portfolio] => sdsdsd
+    [roles] => Array
+        (
+            [0] => Photographer
+            [1] => Digital Marketer
+            [2] => Programmer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 13:01:54 - Received Data:
+Array
+(
+    [name] => name
+    [email] => name@example.com
+    [phone] => 1212
+    [portfolio] => sdsds
+    [roles] => Array
+        (
+            [0] => Copywriter
+            [1] => Content Strategies
+            [2] => 2D / 3D Designer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-25 13:03:16 - Received Data:
+Array
+(
+    [name] => test
+    [email] => test@example.com
+    [phone] => 1212
+    [portfolio] => 2121
+    [roles] => Array
+        (
+            [0] => Photographer
+            [1] => Copywriter
+            [2] => Programmer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+

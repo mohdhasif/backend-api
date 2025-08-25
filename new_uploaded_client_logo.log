@@ -358,3 +358,35 @@ Array
 )
 
 
+2025-08-25 06:22:21 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_11.jpg
+            [full_path] => logo_11.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php39A.tmp
+            [error] => 0
+            [size] => 29822
+        )
+
+)
+
+
+2025-08-25 06:23:42 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_11.jpg
+            [full_path] => logo_11.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php3F09.tmp
+            [error] => 0
+            [size] => 29822
+        )
+
+)
+
+

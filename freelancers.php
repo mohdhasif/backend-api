@@ -21,11 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Log ke file
-$logFile = __DIR__ . '/freelancers.log';
-$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($data, true) . "\n\n";
-file_put_contents($logFile, $logContent, FILE_APPEND);
-
 // Vars
 $name      = $data['name'] ?? 'N/A';
 $email     = $data['email'] ?? 'N/A';
@@ -41,6 +36,7 @@ foreach ($roles as $role) {
     $roleText .= "• $role\n";
 }
 
+$response = '';
 // Insert ke database
 try {
 
@@ -65,11 +61,21 @@ try {
     $stmt2->bind_param("iss", $user_id, $skillset, $defaultAvatar);
     $stmt2->execute();
     $stmt2->close();
+
+    $response = 'Freelancer saved & email sent';
 } catch (Exception $e) {
+    $response = 'DB Error: ' . $e->getMessage();
     http_response_code(500);
     echo json_encode(['status' => 'fail', 'message' => 'DB Error: ' . $e->getMessage()]);
     exit;
 }
+
+$data['response'] = $response;
+
+// Log ke file
+$logFile = __DIR__ . '/freelancers.log';
+$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($data, true) . "\n\n";
+file_put_contents($logFile, $logContent, FILE_APPEND);
 
 // Email content
 $body = <<<EOD

@@ -16,13 +16,12 @@ $user_id = $auth_user_id;
 
 // Sah kan projek memang milik client ini
 $query = "
-SELECT id, title, description, status, progress, created_at, updated_at
+SELECT *
 FROM projects
-WHERE id = ? AND client_id = ?
-";
+WHERE id = ?";
 
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ii", $project_id, $user_id);
+$stmt->bind_param("i", $project_id);
 $stmt->execute();
 $result = $stmt->get_result();
 

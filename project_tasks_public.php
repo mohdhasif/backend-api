@@ -16,7 +16,12 @@ try {
     $user_id = $auth_user_id;
 
     // --- Sahkan user adalah owner projek ini ---
-    $stmt = $conn->prepare("SELECT id FROM projects WHERE id = ? AND client_id = ?");
+    $stmt = $conn->prepare("SELECT 
+        projects.id 
+    FROM 
+        projects 
+    JOIN clients ON projects.client_id = clients.id
+    WHERE projects.id = ? AND clients.user_id = ?");
     $stmt->bind_param("ii", $project_id, $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -34,7 +39,6 @@ try {
         WHERE project_id = ?
         ORDER BY due_date ASC
     ");
-
     
     $stmt->bind_param("i", $project_id);
     $stmt->execute();

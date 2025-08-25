@@ -1,34 +1,20 @@
-' VBScript to run Prayer Cron with role-based device handling
-' This will continue running even when display sleeps
+' Prayer Cron Hidden Script
+' This runs the PHP script every minute completely hidden
 
-Option Explicit
-
-Dim objShell, objFSO, scriptPath, logFile
-Dim phpPath, scriptFile, command
-
-' Get the directory where this script is located
-scriptPath = CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
-logFile = scriptPath & "\solat_push.log"
-
-' Check if PHP is available
 Set objShell = CreateObject("WScript.Shell")
-phpPath = "php.exe"
+Set objFSO = CreateObject("Scripting.FileSystemObject")
 
-' Test if PHP is available
-On Error Resume Next
-objShell.Run "php --version", 0, True
-If Err.Number <> 0 Then
-    WScript.Echo "PHP not found. Please ensure PHP is installed and in PATH."
-    WScript.Quit 1
-End If
-On Error Goto 0
+' Get the script directory
+strScriptDir = objFSO.GetParentFolderName(WScript.ScriptFullName)
+strPhpScript = strScriptDir & "\prayer_cron.php"
+strLogFile = strScriptDir & "\prayer_cron.log"
 
 ' Main loop
 Do
-    ' Run the prayer cron script with role-based device handling
-    command = "php """ & scriptPath & "\cron_prayer_push.php"" >> """ & logFile & """ 2>&1"
-    objShell.Run command, 0, True
+    ' Run PHP script and append to log
+    strCommand = "php """ & strPhpScript & """ >> """ & strLogFile & """ 2>&1"
+    objShell.Run strCommand, 0, False
     
-    ' Wait for 60 seconds (60000 milliseconds)
+    ' Wait 60 seconds
     WScript.Sleep 60000
 Loop

@@ -1,73 +1,103 @@
 <?php
-require_once 'db.php';
+/**
+ * Test Prayer Notification
+ * Sends a dummy notification to test the system
+ */
 
-echo "=== Test Notification System ===\n";
-echo "Current time: " . date('Y-m-d H:i:s') . "\n\n";
+require_once __DIR__ . '/db.php';
 
-// Test OneSignal connection
-function test_onesignal($subscriptionId) {
-    $ONESIGNAL_APP_ID = 'eff1e397-c7ae-468d-9cd5-c673ba80821d';
-    $ONESIGNAL_REST_API_KEY = 'os_v2_app_57y6hf6hvzdi3hgvyzz3vaecdxzolklx5kxecfmr5z72zfpqbydphnpluho5tlcp26fvni3o5obqfhdy2gahxel46bo364mftmjqsfi';
+// Include push helper functions
+require_once __DIR__ . '/push_helper.php';
+
+// Test notification function using push helper
+function send_test_notification($subscriptionId, $title, $body) {
+    echo "📱 Sending test notification...\n";
     
-    $payload = [
-        'app_id' => $ONESIGNAL_APP_ID,
-        'include_subscription_ids' => [$subscriptionId],
-        'headings' => ['en' => 'Test Notification'],
-        'contents' => ['en' => 'This is a test notification to verify the system is working.'],
-        'ttl' => 300,
-    ];
-
-    $ch = curl_init('https://api.onesignal.com/notifications');
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json; charset=utf-8',
-            'Authorization: Basic ' . $ONESIGNAL_REST_API_KEY,
-        ],
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 25,
+    $result = onesignal_send_to_player_ids([$subscriptionId], $title, $body, [
+        'type' => 'test_notification',
+        'timestamp' => time()
     ]);
-
-    $res = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    curl_close($ch);
-    
-    return ['success' => ($code >= 200 && $code < 300), 'code' => $code, 'response' => $res];
-}
-
-// Get active subscriptions
-$sql = "SELECT subscription_id, user_id FROM user_push_subscriptions WHERE subscription_id IS NOT NULL LIMIT 1";
-$res = $conn->query($sql);
-
-if ($res && $res->num_rows > 0) {
-    $row = $res->fetch_assoc();
-    $testSubscription = $row['subscription_id'];
-    
-    echo "Testing notification to subscription: $testSubscription\n";
-    echo "User ID: " . ($row['user_id'] ?? 'NULL') . "\n\n";
-    
-    $result = test_onesignal($testSubscription);
     
     if ($result['success']) {
-        echo "✅ SUCCESS: Test notification sent!\n";
-        echo "Response code: " . $result['code'] . "\n";
-        echo "Response: " . $result['response'] . "\n";
+        echo "✅ Notification sent successfully!\n";
+        echo "HTTP Code: {$result['http_code']}\n";
+        echo "Response: {$result['response']}\n";
+        return true;
     } else {
-        echo "❌ FAILED: Test notification failed\n";
-        echo "Response code: " . $result['code'] . "\n";
-        echo "Response: " . $result['response'] . "\n";
+        echo "❌ Notification failed!\n";
+        echo "HTTP Code: {$result['http_code']}\n";
+        echo "Response: {$result['response']}\n";
+        return false;
     }
-} else {
-    echo "❌ No active subscriptions found\n";
 }
 
-echo "\n=== Next Prayer Times ===\n";
-echo "Maghrib: 19:23 (7:23 PM)\n";
-echo "Isha: 20:33 (8:33 PM)\n";
+// Get all active subscriptions
+$sql = "
+SELECT 
+    ups.id,
+    ups.subscription_id,
+    ups.user_id,
+    ups.install_id,
+    u.name as user_name,
+    u.role as user_role
+FROM user_push_subscriptions ups
+LEFT JOIN users u ON ups.user_id = u.id
+WHERE ups.subscription_id IS NOT NULL
+ORDER BY ups.user_id, ups.id
+";
 
-echo "\n=== System Status ===\n";
-echo "Cron running: " . (shell_exec('tasklist /FI "IMAGENAME eq wscript.exe" 2>nul | find "wscript.exe" >nul && echo "YES" || echo "NO"')) . "\n";
-echo "PHP working: " . (function_exists('curl_init') ? "YES" : "NO") . "\n";
-echo "Database connected: " . ($conn ? "YES" : "NO") . "\n";
+$result = $conn->query($sql);
+$subscriptions = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+echo "=== Prayer Notification Test ===\n";
+echo "Time: " . date('Y-m-d H:i:s') . "\n";
+echo "Total subscriptions found: " . count($subscriptions) . "\n\n";
+
+if (empty($subscriptions)) {
+    echo "❌ No active subscriptions found!\n";
+    exit;
+}
+
+// Send test notification to each subscription
+$success_count = 0;
+$total_count = 0;
+
+foreach ($subscriptions as $sub) {
+    $total_count++;
+    $user_name = $sub['user_name'] ?? 'Guest';
+    $user_role = $sub['user_role'] ?? 'guest';
+    
+    echo "--- Testing Subscription #{$sub['id']} ---\n";
+    echo "User: $user_name (Role: $user_role)\n";
+    echo "Install ID: {$sub['install_id']}\n";
+    echo "Subscription ID: {$sub['subscription_id']}\n";
+    
+    $title = "Test Prayer Notification";
+    $body = "This is a test notification from the prayer cron system. Time: " . date('H:i:s');
+    
+    $success = send_test_notification($sub['subscription_id'], $title, $body);
+    
+    if ($success) {
+        $success_count++;
+    }
+    
+    echo "\n";
+    
+    // Only test first 3 subscriptions to avoid spam
+    if ($total_count >= 3) {
+        echo "⚠️  Limited to first 3 subscriptions to avoid spam\n";
+        break;
+    }
+}
+
+echo "=== Test Summary ===\n";
+echo "Total tested: $total_count\n";
+echo "Successful: $success_count\n";
+echo "Failed: " . ($total_count - $success_count) . "\n";
+
+if ($success_count > 0) {
+    echo "\n✅ Test completed! Check your devices for notifications.\n";
+} else {
+    echo "\n❌ No notifications were sent successfully.\n";
+}
 ?>

@@ -1,81 +1,40 @@
 @echo off
-echo ========================================
-echo    Prayer Cron Background Status Check
-echo ========================================
+echo === Prayer Cron Status ===
+echo Time: %date% %time%
 echo.
 
-REM Check if VBS process is running
-echo [1] Checking VBS Background Process...
-tasklist /FI "IMAGENAME eq wscript.exe" | find "wscript.exe" >nul
+echo 1. Checking if cron is running:
+tasklist | findstr "cmd.exe" | findstr "PrayerCron" >nul
 if %errorlevel% equ 0 (
-    echo    ✅ VBS Background Process: RUNNING
-    for /f "tokens=2" %%i in ('tasklist /FI "IMAGENAME eq wscript.exe" ^| find "wscript.exe"') do set PID=%%i
-    echo    📊 Process ID: %PID%
+    echo    ✅ Cron is RUNNING
 ) else (
-    echo    ❌ VBS Background Process: NOT RUNNING
-    echo    💡 Start with: .\start_hidden_prayer.bat
+    echo    ❌ Cron is NOT running
 )
-
 echo.
 
-REM Check if PHP processes are running
-echo [2] Checking PHP Processes...
-tasklist /FI "IMAGENAME eq php.exe" | find "php.exe" >nul
-if %errorlevel% equ 0 (
-    echo    ⚠️  PHP Processes Found (may be temporary):
-    tasklist /FI "IMAGENAME eq php.exe" | find "php.exe"
-) else (
-    echo    ✅ No PHP processes running (normal for VBS background)
-)
-
-echo.
-
-REM Check recent log activity
-echo [3] Checking Recent Log Activity...
-if exist solat_push.log (
-    echo    ✅ Log file exists: solat_push.log
-    for /f %%i in ('powershell -Command "Get-Content solat_push.log | Select-Object -Last 1 | ForEach-Object { $_.Split('\"')[1] }"') do set last_time=%%i
-    echo    📅 Last execution: %last_time%
+echo 2. Checking log file:
+if exist prayer_cron.log (
+    for %%A in (prayer_cron.log) do set size=%%~zA
+    echo    📄 File: prayer_cron.log (%size% bytes)
     
-    REM Count executions in last 10 minutes
-    powershell -Command "$content = Get-Content solat_push.log; $recent = $content | Where-Object { $_ -match '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}' } | Where-Object { [datetime]::Parse($_.Split('\"')[1]) -gt (Get-Date).AddMinutes(-10) }; Write-Host '    🔄 Executions in last 10 min:' $recent.Count"
+    if %size% gtr 0 (
+        echo    ✅ Log has content
+        echo.
+        echo    📋 Last 3 log entries:
+        echo    -------------------
+        powershell -Command "Get-Content prayer_cron.log -Tail 3"
+    ) else (
+        echo    ❌ Log is empty
+    )
 ) else (
     echo    ❌ Log file not found
 )
-
 echo.
 
-REM Check display sleep compatibility
-echo [4] Display Sleep Compatibility Check...
-echo    ✅ VBS runs in Session 1 (user session)
-echo    ✅ No visible windows or console
-echo    ✅ Low CPU usage (background priority)
-echo    ✅ Will continue when display sleeps
-echo    ✅ No wake-up requests sent
-
+echo === Commands ===
+echo Start:  start_prayer_minimized.bat
+echo Stop:   taskkill /f /im cmd.exe /fi "WINDOWTITLE eq PrayerCron*"
+echo Check:  check_prayer_status.bat
+echo Logs:   type prayer_cron.log
 echo.
-
-REM Check system power settings
-echo [5] System Power Settings...
-powercfg /query | find "Sleep" >nul
-if %errorlevel% equ 0 (
-    echo    ✅ Power management active
-    echo    💡 Your display can sleep normally
-) else (
-    echo    ⚠️  Power settings not detected
-)
-
-echo.
-
-REM Show management commands
-echo [6] Management Commands:
-echo    📋 Check status: .\check_prayer_status.bat
-echo    🚀 Start: .\start_hidden_prayer.bat
-echo    🛑 Stop: taskkill /F /IM wscript.exe
-echo    📊 View logs: type solat_push.log
-echo    🔄 Restart: taskkill /F /IM wscript.exe ^&^& .\start_hidden_prayer.bat
-
-echo.
-echo ========================================
-echo    Status Check Complete
-echo ========================================
+pause

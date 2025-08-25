@@ -156,7 +156,6 @@ SELECT
   ups.subscription_id,
   ups.user_id,
   ups.install_id,
-  -- Priority: user settings > install settings > default
   COALESCE(
     (SELECT method FROM user_prayer_settings WHERE user_id = ups.user_id LIMIT 1),
     (SELECT method FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1),
@@ -179,7 +178,6 @@ SELECT
     (SELECT enabled FROM user_prayer_settings WHERE install_id = ups.install_id LIMIT 1),
     1
   ) AS enabled,
-  -- For non-admin users, only get the latest device
   CASE 
     WHEN ups.user_id IS NOT NULL THEN (
       SELECT MAX(ups2.id) 

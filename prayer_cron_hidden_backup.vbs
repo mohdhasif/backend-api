@@ -1,4 +1,4 @@
-' VBScript to run Prayer Cron with role-based device handling
+' VBScript to run Prayer Cron completely hidden in background
 ' This will continue running even when display sleeps
 
 Option Explicit
@@ -25,7 +25,7 @@ On Error Goto 0
 
 ' Main loop
 Do
-    ' Run the prayer cron script with role-based device handling
+    ' Run the prayer cron script
     command = "php """ & scriptPath & "\cron_prayer_push.php"" >> """ & logFile & """ 2>&1"
     objShell.Run command, 0, True
     

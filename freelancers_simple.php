@@ -41,11 +41,10 @@ try {
 
     if ($q !== '') {
         // cari di users
-        $where[] = "(u.name LIKE CONCAT('%', ?, '%') OR u.email LIKE CONCAT('%', ?, '%') OR u.phone LIKE CONCAT('%', ?, '%'))";
+        $where[] = "(u.name LIKE CONCAT('%', ?, '%') OR u.email LIKE CONCAT('%', ?, '%'))";
         $params[] = $q;
         $params[] = $q;
-        $params[] = $q;
-        $types   .= 'sss';
+        $types   .= 'ss';
     }
 
     if ($status !== '') {
@@ -72,7 +71,6 @@ try {
             f.user_id,
             u.name,
             u.email,
-            u.phone,
             f.avatar_url,
             f.status
         FROM freelancers f

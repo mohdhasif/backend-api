@@ -149,3 +149,21 @@ Array
 )
 
 
+2025-08-19 09:00:46 - Received Data:
+Array
+(
+    [clientType] => company
+    [name] => Comp Tech
+    [email] => comp@example.com
+    [phone] => 01123119384
+    [message] => Testing, okay je
+    [selectedServices] => Array
+        (
+            [0] => 1
+            [1] => 2
+            [2] => 3
+        )
+
+)
+
+

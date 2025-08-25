@@ -56,3 +56,302 @@ Array
 )
 
 
+2025-08-19 08:40:49 - Received Data:
+Array
+(
+    [name] => Mohd Hasif
+    [email] => mohdhasif.nz45@gmail.com
+
+    [phone] => 01123119384
+    [portfolio] => testting
+    [roles] => Array
+        (
+            [0] => Graphic Designer
+            [1] => Video
+            [2] => Multimedia Designer
+            [3] => Content Strategies
+            [4] => Copywriter
+        )
+
+)
+
+
+2025-08-19 16:50:47 - Received Data:
+Array
+(
+    [name] => Mohd Hasif
+    [email] => mohdhasif.nz45@gmail.com
+    [phone] => 01123119384
+    [portfolio] => Web Development, React
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 16:59:16 - Received Data:
+Array
+(
+    [name] => Mohd Hasif
+    [email] => mohdhasif.nz45@gmail.com
+    [phone] => 011231123119384
+    [portfolio] => Web Development, React
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 17:28:13 - Received Data:
+Array
+(
+    [name] => Test freelancers
+    [email] => test@example.com
+    [phone] => 01123119384
+    [portfolio] => Testing je
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 17:29:57 - Received Data:
+Array
+(
+    [name] => testing
+    [email] => test123@example.com
+    [phone] => 01123119384
+    [portfolio] => test
+    [roles] => Array
+        (
+            [0] => Photographer
+            [1] => Digital Marketer
+        )
+
+)
+
+
+2025-08-19 17:35:22 - Received Data:
+Array
+(
+    [name] => yes
+    [email] => yes@example.com
+    [phone] => 01123119384
+    [portfolio] => ye
+    [roles] => Array
+        (
+            [0] => Copywriter
+            [1] => Photographer
+            [2] => Digital Marketer
+        )
+
+)
+
+
+2025-08-19 17:44:04 - Received Data:
+Array
+(
+    [name] => Yes okay
+    [email] => okay@example.com
+    [phone] => 01123119384
+    [portfolio] => okay
+    [roles] => Array
+        (
+            [0] => Video
+            [1] => Web Developer
+            [2] => Programmer
+        )
+
+)
+
+
+2025-08-19 18:03:02 - Received Data:
+Array
+(
+    [name] => Yes okay
+    [email] => okay123@example.com
+    [phone] => 01123119384
+    [portfolio] => Boleh tahan
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+            [2] => Digital Marketer
+        )
+
+)
+
+
+2025-08-19 18:04:39 - Received Data:
+Array
+(
+    [name] => Mohd Hasif
+    [email] => hasif@example.com
+    [phone] => 01123119384
+    [portfolio] => Test test
+    [roles] => Array
+        (
+            [0] => Video
+            [1] => Multimedia Designer
+        )
+
+)
+
+
+2025-08-19 18:23:11 - Received Data:
+Array
+(
+    [name] => john
+    [email] => john@example.com
+    [phone] => 01123119384
+    [portfolio] => testing
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 18:45:58 - Received Data:
+Array
+(
+    [name] => testttt
+    [email] => testtt@example.com
+    [phone] => 01123119384
+    [portfolio] => okay je
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+            [2] => Photographer
+        )
+
+)
+
+
+2025-08-19 18:51:19 - Received Data:
+Array
+(
+    [name] => all
+    [email] => all@example.com
+    [phone] => 01123119384
+    [portfolio] => Yes all
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 19:02:12 - Received Data:
+Array
+(
+    [name] => leagure
+    [email] => lead@example.com
+    [phone] => 01123119384
+    [portfolio] => Dev ops
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 19:04:34 - Received Data:
+Array
+(
+    [name] => mohd
+    [email] => mohd@example.com
+    [phone] => 01123119384
+    [portfolio] => example
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+        )
+
+)
+
+
+2025-08-19 19:12:31 - Received Data:
+Array
+(
+    [name] => free
+    [email] => free@example.com
+    [phone] => 01123119384
+    [portfolio] => tech
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Photographer
+            [2] => Video
+        )
+
+)
+
+
+2025-08-19 19:23:15 - Received Data:
+Array
+(
+    [name] => test123
+    [email] => test123@example.com
+    [phone] => 01123119384
+    [portfolio] => Okay je
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+            [2] => Video
+        )
+
+)
+
+
+2025-08-19 19:23:32 - Received Data:
+Array
+(
+    [name] => test123
+    [email] => testokayje@example.com
+    [phone] => 01123119384
+    [portfolio] => Okay je
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+            [2] => Video
+        )
+
+)
+
+
+2025-08-19 19:32:27 - Received Data:
+Array
+(
+    [name] => 123
+    [email] => 123@example.com
+    [phone] => 01123119384
+    [portfolio] => Okay je
+    [roles] => Array
+        (
+            [0] => Web Developer
+            [1] => Programmer
+        )
+
+)
+
+

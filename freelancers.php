@@ -1,5 +1,4 @@
 <?php
-
 // Manual include PHPMailer classes
 require 'PHPMailer/PHPMailer.php';
 require 'PHPMailer/SMTP.php';
@@ -8,8 +7,12 @@ require 'PHPMailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header('Content-Type: application/json'); // ✅ PENTING!
+header('Content-Type: application/json');
 
+// Sambung DB
+require_once __DIR__ . '/db.php'; // pastikan file db.php ada (mysqli $conn)
+
+// Request check
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['status' => 'fail', 'message' => 'Method not allowed']);
@@ -23,24 +26,49 @@ $logFile = __DIR__ . '/freelancers.log';
 $logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($data, true) . "\n\n";
 file_put_contents($logFile, $logContent, FILE_APPEND);
 
-// ✅ Response dalam JSON
-// echo json_encode([
-//     'status' => 'success',
-//     'message' => 'Data received and logged.'
-// ]);
-
-$name = $data['name'] ?? 'N/A';
-$email = $data['email'] ?? 'N/A';
-$phone = $data['phone'] ?? 'N/A';
+// Vars
+$name      = $data['name'] ?? 'N/A';
+$email     = $data['email'] ?? 'N/A';
+$phone     = $data['phone'] ?? 'N/A';
 $portfolio = $data['portfolio'] ?? 'N/A';
-$roles = $data['roles'] ?? [];
+$roles     = $data['roles'] ?? [];
 
-$whatsappLink = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $phone);
+$whatsappLink = 'https://wa.me/6' . preg_replace('/[^0-9]/', '', $phone);
 
-// Formatkan senarai roles
+// Format roles
 $roleText = '';
 foreach ($roles as $role) {
     $roleText .= "• $role\n";
+}
+
+// Insert ke database
+try {
+
+    // Generate password
+    $password_raw = bin2hex(random_bytes(4)); // 8 char
+    $password_hash = MD5($password_raw);
+    $role = "client";
+    $created_at = date("Y-m-d H:i:s");
+
+    // --- Insert ke users ---
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password, phone, role, created_at, temp_password) VALUES (?, ?, ?, ?, 'freelancer', ?, ?)");
+    $stmt->bind_param("ssssss", $name, $email, $password_hash,  $phone, $created_at, $password_raw);
+
+    $stmt->execute();
+    $user_id = $stmt->insert_id;
+    $stmt->close();
+
+    // --- Insert ke freelancers ---
+    $skillset = implode(',', $roles); // simpan roles jadi skillset
+    $stmt2 = $conn->prepare("INSERT INTO freelancers (user_id, skillset, avatar_url) VALUES (?, ?, ?)");
+    $defaultAvatar = null; // boleh fallback kalau perlu
+    $stmt2->bind_param("iss", $user_id, $skillset, $defaultAvatar);
+    $stmt2->execute();
+    $stmt2->close();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['status' => 'fail', 'message' => 'DB Error: ' . $e->getMessage()]);
+    exit;
 }
 
 // Email content
@@ -65,38 +93,28 @@ EOD;
 $mail = new PHPMailer(true);
 
 try {
-    // // Config SMTP (Gmail example)
-    // $mail->isSMTP();
-    // $mail->Host = 'smtp.gmail.com';
-    // $mail->SMTPAuth = true;
-    // $mail->Username = 'yourgmail@gmail.com'; // Tukar
-    // $mail->Password = 'your_app_password';   // App password, BUKAN password biasa
-    // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    // $mail->Port = 465;
-
-    // Server settings
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com'; // Your SMTP server
+    $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username = 'mohdhasif24181@gmail.com';
-    $mail->Password   = 'bejt qgpy gntm vbst'; // SMTP password
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption type
-    $mail->Port       = 587; // SMTP port
+    $mail->Username   = 'mohdhasif24181@gmail.com';
+    $mail->Password   = 'bejt qgpy gntm vbst'; // app password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
 
-    // Email info
-    $mail->setFrom('mohdhasif24181@gmail.com', 'SS Discovery'); // ✅ buang satu '@'
-    // $mail->addAddress($email, $name); // hantar ke pengguna  
-    $mail->addAddress('marketing.finite@gmail.com', 'Finite Marketing'); // hantar ke pengguna
-    // $mail->addAddress('mohdhasif24181@gmail.com', 'Mohd Hasif'); // hantar ke pengguna
-    $mail->addReplyTo('mohdhasif24181@gmail.com');
+    $mail->setFrom('mohdhasif24181@gmail.com', 'Admin Finite');
+    $mail->addAddress('mohdhasif24181@gmail.com', 'Mohd Hasif');
 
-    // Content
     $mail->isHTML(false);
     $mail->Subject = "Freelancer Application Received - $name";
     $mail->Body    = $body;
 
     $mail->send();
-    echo json_encode(['status' => 'success', 'message' => 'Email sent using PHPMailer']);
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Freelancer saved & email sent',
+        'user_id' => $user_id
+    ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([

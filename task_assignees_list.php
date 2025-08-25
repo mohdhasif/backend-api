@@ -4,7 +4,7 @@ try {
     require_once __DIR__ . '/db.php';
 
     $task_id = intval($_GET['task_id'] ?? 0);
-    if (!$token || $task_id <= 0) {
+    if ($task_id <= 0) {
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Missing token or task_id']);
         exit;

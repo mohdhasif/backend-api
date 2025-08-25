@@ -1,60 +1,8 @@
 <?php
 require_once __DIR__ . '/db.php'; // $conn & CORS/OPTIONS
 
-// ---------- utils: token ----------
-function read_token(): string {
-  $headers = function_exists('getallheaders') ? getallheaders() : [];
-  $auth = $headers['Authorization'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
-  if (!$auth && isset($_GET['token'])) { // fallback for troubleshooting
-    $auth = 'Bearer ' . $_GET['token'];
-  }
-  $auth = trim($auth);
-  return preg_replace('/^Bearer\s+/i', '', $auth);
-}
-
-// ---------- basic logging (optional) ----------
-try {
-  $logDir = __DIR__ . '/logs';
-  if (!is_dir($logDir)) @mkdir($logDir, 0775, true);
-  @file_put_contents(
-    $logDir . '/get_project_summaries.log',
-    sprintf(
-      "[%s] ip=%s ua=%s method=%s token_prefix=%s\n",
-      date('c'),
-      $_SERVER['REMOTE_ADDR'] ?? '-',
-      $_SERVER['HTTP_USER_AGENT'] ?? '-',
-      $_SERVER['REQUEST_METHOD'] ?? 'GET',
-      substr(read_token(), 0, 6)
-    ),
-    FILE_APPEND
-  );
-} catch (Throwable $e) { /* ignore logging errors */ }
-
-// ---------- auth ----------
-$token = read_token();
-if (!$token) {
-  http_response_code(401);
-  echo json_encode(['success' => false, 'error' => 'Missing token']);
-  exit;
-}
-
-try {
-  $stmt = $conn->prepare("SELECT id, name, email, role FROM users WHERE BINARY token = ? LIMIT 1");
-  $stmt->bind_param("s", $token);
-  $stmt->execute();
-  $u = $stmt->get_result()->fetch_assoc();
-  $stmt->close();
-
-  if (!$u) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Invalid token']);
-    exit;
-  }
-} catch (Throwable $e) {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'error' => 'Auth query failed']);
-  exit;
-}
+$user = auth_user($conn);              // <-- pusat
+$auth_user_id = (int)$user['id'];
 
 // ---------- input ----------
 $projectId = isset($_GET['project_id']) ? (int)$_GET['project_id'] : null;

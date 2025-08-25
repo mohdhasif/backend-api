@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>♡</title>
+  <style>
+    :root{
+      --neon1:#ff3cac; /* pink */
+      --neon2:#784ba0; /* purple */
+      --neon3:#2b86c5; /* cyan */
+      --bg1:#0b0010; --bg2:#020008;
+      --text:#fff5ff;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0; overflow:hidden; position:relative;
+      background: radial-gradient(1200px 800px at 50% 20%, var(--bg1), var(--bg2) 60%);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+    }
+
+    /* starry twinkle */
+    body::before{
+      content:""; position:fixed; inset:0; pointer-events:none;
+      background-image:
+        radial-gradient(#ffffff1a 1px, transparent 1.2px),
+        radial-gradient(#ffffff0d 1px, transparent 1.2px);
+      background-size:3px 3px, 4px 4px; background-position:0 0, 2px 1px;
+      animation: twinkle 30s linear infinite;
+    }
+    @keyframes twinkle{to{transform:translate3d(-24px,-32px,0)}}
+
+    /* global defs once, reused everywhere */
+    svg#defs { position:absolute; width:0; height:0; }
+
+    .field{ position:fixed; inset:0; }
+
+    .h{ position:absolute; left:calc(var(--x)*1vw); top:calc(var(--y)*1vh);
+        width:calc(14vmin*var(--s)); height:auto; transform:translate(-50%,-50%) rotate(var(--rot));
+        opacity:var(--o,0.85); filter:saturate(1.15);
+        animation: float var(--d)s ease-in-out infinite; animation-delay: var(--delay,0s);
+    }
+    .h use{ fill:none; stroke:url(#g); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+            filter:url(#glow-4); stroke-dasharray: 170 60; animation: dash 5.2s linear infinite;
+            animation-delay: var(--delay,0s);
+    }
+
+    @keyframes float{ 0%,100%{ transform:translate(-50%,-50%) rotate(var(--rot)) }
+                      50%    { transform:translate(-50%,calc(-50% - 12px)) rotate(calc(var(--rot) + 3deg)) } }
+    @keyframes dash{ to{ stroke-dashoffset:-280 } }
+
+    /* big centerpiece */
+    .center{ position:fixed; inset:0; display:grid; place-items:center; pointer-events:none; }
+    .big{ width:min(78vmin, 560px); height:auto; animation: hue 18s linear infinite, beat 1.9s ease-in-out infinite; }
+    .big .outer{ stroke-width:12; opacity:.25; filter:url(#glow-8) }
+    .big .mid  { stroke-width:7;  opacity:.6;  filter:url(#glow-4) }
+    .big .core { stroke-width:3.2 }
+    .big use{ fill:none; stroke:url(#g); stroke-linecap:round; stroke-linejoin:round; }
+    @keyframes hue{ to{ filter:hue-rotate(360deg) } }
+    @keyframes beat{ 50%{ transform:scale(1.06) } }
+
+    /* names only */
+    .names{
+      position:fixed; inset:0; display:grid; place-items:center; text-align:center; pointer-events:none;
+      font-weight:700; letter-spacing:.6px; line-height:1; text-transform:none;
+      font-size: clamp(28px, 6.2vmin, 72px);
+      background: linear-gradient(90deg, var(--neon1), var(--neon2), var(--neon3));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow: 0 0 10px #ff3cac55, 0 0 22px #784ba055, 0 0 30px #2b86c555;
+      filter: drop-shadow(0 0 10px #ff3cac55) drop-shadow(0 0 16px #2b86c555);
+      animation: glowText 3.2s ease-in-out infinite;
+    }
+    @keyframes glowText{ 50%{ text-shadow: 0 0 14px #ff3cac88, 0 0 28px #784ba088, 0 0 42px #2b86c588 } }
+
+  </style>
+</head>
+<body>
+
+  <!-- defs (gradients, filters, reusable heart path) -->
+  <svg id="defs" viewBox="-60 -60 120 120" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="var(--neon1)"/>
+        <stop offset="50%"  stop-color="var(--neon2)"/>
+        <stop offset="100%" stop-color="var(--neon3)"/>
+      </linearGradient>
+      <filter id="glow-4"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow-8"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <path id="hp" d="M 0 -34 C 0 -54, 40 -54, 40 -34 C 40 -18, 24 -4, 0 16 C -24 -4, -40 -18, -40 -34 C -40 -54, 0 -54, 0 -34"/>
+    </defs>
+  </svg>
+
+  <!-- floating hearts field (many border-only neon hearts) -->
+  <div class="field" aria-hidden="true">
+    <!-- Row 1 -->
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:8;  --y:14; --s:.9; --d:18; --delay:-2s; --o:.8;  --rot:-8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:18; --y:10; --s:1.0; --d:22; --delay:-4s; --o:.85; --rot:5deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:28; --y:16; --s:.7; --d:16; --delay:-1s; --o:.75; --rot:12deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:40; --y:12; --s:1.1; --d:21; --delay:-3s; --o:.9;  --rot:-3deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:54; --y:9;  --s:.8; --d:19; --delay:-6s; --o:.7;  --rot:8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:66; --y:15; --s:.95;--d:23; --delay:-5s; --o:.8;  --rot:-10deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:78; --y:11; --s:.7; --d:17; --delay:-2s; --o:.75; --rot:4deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:90; --y:14; --s:.9; --d:20; --delay:-7s; --o:.8;  --rot:0deg"><use href="#hp"/></svg>
+
+    <!-- Row 2 -->
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:6;  --y:30; --s:.8; --d:20; --delay:-3s; --o:.75; --rot:6deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:16; --y:26; --s:.7; --d:18; --delay:-1s; --o:.7;  --rot:-14deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:26; --y:32; --s:1.15;--d:24; --delay:-5s; --o:.9;  --rot:10deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:38; --y:28; --s:.85;--d:19; --delay:-8s; --o:.8;  --rot:-6deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:52; --y:33; --s:.75;--d:16; --delay:-2s; --o:.7;  --rot:8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:64; --y:27; --s:1.0; --d:22; --delay:-4s; --o:.85; --rot:0deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:76; --y:31; --s:.9; --d:20; --delay:-7s; --o:.8;  --rot:-11deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:88; --y:29; --s:.7; --d:17; --delay:-3s; --o:.7;  --rot:12deg"><use href="#hp"/></svg>
+
+    <!-- Row 3 -->
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:10; --y:48; --s:1.05;--d:22; --delay:-6s; --o:.85; --rot:-5deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:22; --y:46; --s:.8; --d:20; --delay:-1s; --o:.75; --rot:6deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:34; --y:52; --s:.7; --d:18; --delay:-3s; --o:.7;  --rot:-9deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:46; --y:47; --s:1.2; --d:26; --delay:-9s; --o:.92; --rot:3deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:58; --y:53; --s:.85;--d:19; --delay:-5s; --o:.8;  --rot:-12deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:70; --y:49; --s:.75;--d:17; --delay:-2s; --o:.72; --rot:8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:82; --y:51; --s:1.0; --d:22; --delay:-4s; --o:.85; --rot:0deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:94; --y:48; --s:.9; --d:20; --delay:-7s; --o:.8;  --rot:-6deg"><use href="#hp"/></svg>
+
+    <!-- Row 4 -->
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:8;  --y:68; --s:.7; --d:16; --delay:-2s; --o:.7;  --rot:10deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:20; --y:70; --s:.95;--d:21; --delay:-5s; --o:.8;  --rot:-8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:32; --y:66; --s:1.1; --d:24; --delay:-6s; --o:.9;  --rot:2deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:44; --y:72; --s:.8; --d:19; --delay:-1s; --o:.75; --rot:-12deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:56; --y:69; --s:.85;--d:19; --delay:-8s; --o:.78; --rot:9deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:68; --y:67; --s:.7; --d:17; --delay:-3s; --o:.7;  --rot:-6deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:80; --y:73; --s:1.05;--d:23; --delay:-4s; --o:.86; --rot:4deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:92; --y:68; --s:.9; --d:20; --delay:-7s; --o:.8;  --rot:0deg"><use href="#hp"/></svg>
+
+    <!-- Row 5 -->
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:12; --y:86; --s:.85;--d:19; --delay:-3s; --o:.78; --rot:-10deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:24; --y:90; --s:.7; --d:16; --delay:-2s; --o:.7;  --rot:8deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:36; --y:88; --s:1.0; --d:22; --delay:-6s; --o:.85; --rot:-4deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:50; --y:92; --s:.8; --d:18; --delay:-1s; --o:.75; --rot:6deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:64; --y:89; --s:.95;--d:21; --delay:-5s; --o:.82; --rot:-7deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:76; --y:91; --s:.7; --d:17; --delay:-4s; --o:.7;  --rot:10deg"><use href="#hp"/></svg>
+    <svg class="h" viewBox="-60 -60 120 120" style="--x:88; --y:87; --s:1.1; --d:24; --delay:-8s; --o:.88; --rot:0deg"><use href="#hp"/></svg>
+  </div>
+
+  <!-- centerpiece neon heart + sparkle -->
+  <div class="center" aria-hidden="true">
+    <svg class="big" viewBox="-60 -60 120 120">
+      <use href="#hp" class="outer"/>
+      <use href="#hp" class="mid"/>
+      <use href="#hp" class="core"/>
+      <g filter="url(#glow-4)">
+        <circle r="2" fill="#fff" opacity=".9">
+          <animateMotion dur="7s" repeatCount="indefinite" rotate="auto">
+            <mpath xlink:href="#hp" href="#hp"/>
+          </animateMotion>
+        </circle>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ONLY visible text on the page -->
+  <div class="names">Hasif &amp; Nabila</div>
+
+</body>
+</html>

@@ -100,7 +100,7 @@ try {
     $mail->Port       = 587; // SMTP port
 
     // Email info
-    $mail->setFrom('mohdhasif24181@gmail.com', 'SS Discovery'); // ✅ buang satu '@'
+    $mail->setFrom('mohdhasif24181@gmail.com', 'Admin Finite'); // ✅ buang satu '@'
     // $mail->addAddress($email, $name); // hantar ke pengguna  
     $mail->addAddress('marketing.finite@gmail.com', 'Finite Marketing'); // hantar ke pengguna
     $mail->addReplyTo('mohdhasif24181@gmail.com');

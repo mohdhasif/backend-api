@@ -1,18 +1,13 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
-    exit();
-}
+require_once __DIR__ . '/db.php'; // pastikan include db.php
 
 $base_url = '/uploads/avatars/';
 $default_avatar = $base_url . 'avatars.png';
 
-$sql = "
+try {
+
+    $sql = "
     SELECT 
         f.id AS freelancer_id,
         u.id AS user_id,
@@ -27,23 +22,25 @@ $sql = "
     WHERE u.role = 'freelancer'
 ";
 
-$result = $conn->query($sql);
-$freelancers = [];
+    $result = $conn->query($sql);
+    $freelancers = [];
 
-while ($row = $result->fetch_assoc()) {
-    $avatar = $row['avatar_url'] ? $row['avatar_url'] : $default_avatar;
+    while ($row = $result->fetch_assoc()) {
+        $avatar = $row['avatar_url'] ? $row['avatar_url'] : $default_avatar;
 
-    $freelancers[] = [
-        'id' => (int)$row['freelancer_id'],
-        'user_id' => (int)$row['user_id'],
-        'name' => $row['name'],
-        'email' => $row['email'],
-        'skillset' => $row['skillset'],
-        'availability' => (bool)$row['availability'],
-        'avatar' => $avatar,
-        'status' => $row['status'],
-    ];
+        $freelancers[] = [
+            'id' => (int)$row['freelancer_id'],
+            'user_id' => (int)$row['user_id'],
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'skillset' => $row['skillset'],
+            'availability' => (bool)$row['availability'],
+            'avatar' => $avatar,
+            'status' => $row['status'],
+        ];
+    }
+
+    echo json_encode($freelancers);
+} catch (\Throwable $th) {
+    echo json_encode($th->getMessage());
 }
-
-echo json_encode($freelancers);
-?>

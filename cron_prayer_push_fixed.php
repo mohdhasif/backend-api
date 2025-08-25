@@ -1,21 +1,34 @@
 <?php
 /**
- * cron_prayer_push.php
- * - Check setiap minit waktu solat (ikut GPS lat/long) dan hantar push OneSignal
- * - API: https://api.waktusolat.app/v2/solat/{lat}/{long}
- * - Jadualkan: * * * * * /usr/bin/php /path/cron_prayer_push.php >> /var/log/solat_push.log 2>&1
+ * cron_prayer_push_fixed.php
+ * - Enhanced version with better duplicate prevention
+ * - Prevents multiple notifications for the same prayer time
  */
 
 require_once __DIR__ . '/db.php'; // $conn (mysqli)
 
 // ===== OneSignal Config =====
 const ONESIGNAL_APP_ID = 'eff1e397-c7ae-468d-9cd5-c673ba80821d';
-const ONESIGNAL_REST_API_KEY = 'os_v2_app_57y6hf6hvzdi3hgvyzz3vaecdxzolklx5kxecfmr5z72zfpqbydphnpluho5tlcp26fvni3o5obqfhdy2gahxel46bo364mftmjqsfi'; // <-- TUKAR
+const ONESIGNAL_REST_API_KEY = 'os_v2_app_57y6hf6hvzdi3hgvyzz3vaecdxzolklx5kxecfmr5z72zfpqbydphnpluho5tlcp26fvni3o5obqfhdy2gahxel46bo364mftmjqsfi';
 
-// ===== CA bundle (elak SSL error 60). Letak cacert.pem sebelah file ini. =====
+// ===== CA bundle =====
 $CA_CERT = __DIR__ . DIRECTORY_SEPARATOR . 'cacert.pem';
 
-// ===== Util: HTTP GET via cURL (respect CA) =====
+// ===== Enhanced duplicate prevention =====
+function check_already_sent_today($conn, $subscriptionId, $prayerName): bool {
+  $today = date('Y-m-d');
+  $stmt = $conn->prepare("
+    SELECT COUNT(*) as count 
+    FROM prayer_notifications_sent 
+    WHERE subscription_id = ? AND prayer = ? AND DATE(sent_at) = ?
+  ");
+  $stmt->bind_param("sss", $subscriptionId, $prayerName, $today);
+  $stmt->execute();
+  $result = $stmt->get_result()->fetch_assoc();
+  return $result['count'] > 0;
+}
+
+// ===== HTTP GET function =====
 function http_get(string $url, int $timeout = 20): ?string {
   global $CA_CERT;
   $ch = curl_init($url);
@@ -125,9 +138,9 @@ function same_minute_epoch(int $a, int $b): bool {
   return intdiv($a, 60) === intdiv($b, 60);
 }
 
-// ===== Ambil semua subscription + setting (utamakan setting ikut user; fallback ikut install) =====
+// ===== Main logic with enhanced duplicate prevention =====
 $sql = "
-SELECT
+SELECT DISTINCT
   ups.subscription_id,
   ups.user_id,
   ups.install_id,
@@ -143,6 +156,7 @@ LEFT JOIN user_prayer_settings s_inst
   ON s_inst.install_id = ups.install_id
 WHERE ups.subscription_id IS NOT NULL
 ";
+
 $res  = $conn->query($sql);
 $subs = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -158,30 +172,32 @@ foreach ($subs as $r) {
   $method = strtoupper((string)($r['method'] ?? 'GPS'));
   $times  = null;
 
-  // === GPS (disyorkan) ===
+  // === GPS method ===
   if ($method === 'GPS' && !empty($r['latitude']) && !empty($r['longitude'])) {
     $month = fetch_month_gps((float)$r['latitude'], (float)$r['longitude']);
     if ($month) $times = today_epochs_from_month($month);
   }
-
-  // (Optional) Tambah fallback JAKIM zone jika mahu:
-  // else if ($method === 'JAKIM' && !empty($r['jakim_zone'])) { ... }
 
   if (!$times) continue;
 
   foreach ($times as $name => $ts) {
     if (!same_minute_epoch($now, $ts)) continue;
 
-    // Lock duplicate guna INSERT IGNORE (unik pada user_id/install_id + prayer + sent_at)
+    // Enhanced duplicate check - check if already sent today
+    if (check_already_sent_today($conn, $r['subscription_id'], $name)) {
+      continue; // Already sent today, skip
+    }
+
+    // Lock duplicate guna INSERT IGNORE
     $whoUser = $r['user_id'] ? (int)$r['user_id'] : null;
     $whoInst = $r['user_id'] ? null : ($r['install_id'] ?? null);
     $tsStr   = (string)$ts;
 
     $lock = $conn->prepare("
-      INSERT IGNORE INTO prayer_notifications_sent (user_id, install_id, prayer, sent_at)
-      VALUES (?,?,?,FROM_UNIXTIME(?))
+      INSERT IGNORE INTO prayer_notifications_sent (user_id, install_id, prayer, sent_at, subscription_id)
+      VALUES (?,?,?,FROM_UNIXTIME(?),?)
     ");
-    $lock->bind_param("isss", $whoUser, $whoInst, $name, $tsStr);
+    $lock->bind_param("issss", $whoUser, $whoInst, $name, $tsStr, $r['subscription_id']);
     $lock->execute();
 
     if ($lock->affected_rows === 0) {
@@ -192,12 +208,12 @@ foreach ($subs as $r) {
     // Hantar push
     $ok = onesignal_send($r['subscription_id'], "Waktu $name", "Sudah masuk waktu $name.");
     if (!$ok) {
-      // rollback lock (optional)
+      // rollback lock
       $del = $conn->prepare("
         DELETE FROM prayer_notifications_sent
-        WHERE user_id <=> ? AND install_id <=> ? AND prayer=? AND sent_at=FROM_UNIXTIME(?)
+        WHERE user_id <=> ? AND install_id <=> ? AND prayer=? AND sent_at=FROM_UNIXTIME(?) AND subscription_id=?
       ");
-      $del->bind_param("isss", $whoUser, $whoInst, $name, $tsStr);
+      $del->bind_param("issss", $whoUser, $whoInst, $name, $tsStr, $r['subscription_id']);
       $del->execute();
     } else {
       $sent++;

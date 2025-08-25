@@ -78,10 +78,9 @@ function onesignal_send(string $subscriptionId, string $title, string $body): bo
     CURLOPT_POSTFIELDS => json_encode($payload),
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT => 25,
+    CURLOPT_SSL_VERIFYPEER => false, // Ensure notifications are always sent
+    CURLOPT_SSL_VERIFYHOST => false,
   ]);
-  if (is_file($CA_CERT)) {
-    curl_setopt($ch, CURLOPT_CAINFO, $CA_CERT);
-  }
 
   $res  = curl_exec($ch);
   $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
@@ -153,6 +152,7 @@ function get_user_role($conn, $userId): string {
 // ===== Main logic: Role-based device handling =====
 $sql = "
 SELECT 
+  ups.id,
   ups.subscription_id,
   ups.user_id,
   ups.install_id,

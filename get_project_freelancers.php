@@ -21,7 +21,8 @@ try {
             f.skillset,
             f.status as freelancer_status,
             u.name as freelancer_name,
-            u.email as freelancer_email
+            u.email as freelancer_email,
+            u.avatar_url as freelancer_avatar_url
         FROM tasks t
         INNER JOIN task_assignees ta ON t.id = ta.task_id
         INNER JOIN freelancers f ON ta.freelancer_id = f.id

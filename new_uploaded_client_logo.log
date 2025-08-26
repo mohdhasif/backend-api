@@ -390,3 +390,19 @@ Array
 )
 
 
+2025-08-26 05:48:43 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php9A2D.tmp
+            [error] => 0
+            [size] => 29822
+        )
+
+)
+
+

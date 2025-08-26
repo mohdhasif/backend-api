@@ -69,24 +69,38 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 }
 
 try {
-    // Update users table (name & email)
-    $stmtUser = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-    $stmtUser->bind_param("ssi", $name, $email, $user_id);
-    $stmtUser->execute();
+    // Start transaction
+    $conn->begin_transaction();
+    
+    // Update users table (name, email, and avatar_url)
+    $stmtUser = $conn->prepare("UPDATE users SET name = ?, email = ?, avatar_url = ? WHERE id = ?");
+    $stmtUser->bind_param("sssi", $name, $email, $avatar_url, $user_id);
+    
+    if (!$stmtUser->execute()) {
+        throw new Exception("Failed to update users table: " . $stmtUser->error);
+    }
     $stmtUser->close();
 
-    // Update freelancers table
+    // Update freelancers table (without avatar_url)
     $stmtFreelancer = $conn->prepare("
         UPDATE freelancers 
-        SET skillset = ?, availability = ?, status = ?, avatar_url = ?
+        SET skillset = ?, availability = ?, status = ?
         WHERE id = ?
     ");
-    $stmtFreelancer->bind_param("sissi", $skillset, $availability, $status, $avatar_url, $freelancer_id);
-    $stmtFreelancer->execute();
+    $stmtFreelancer->bind_param("sisi", $skillset, $availability, $status, $freelancer_id);
+    
+    if (!$stmtFreelancer->execute()) {
+        throw new Exception("Failed to update freelancers table: " . $stmtFreelancer->error);
+    }
     $stmtFreelancer->close();
 
+    // Commit transaction
+    $conn->commit();
+    
     echo json_encode(["success" => true, "message" => "Freelancer updated successfully"]);
 } catch (Exception $e) {
+    // Rollback on error
+    $conn->rollback();
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }
 

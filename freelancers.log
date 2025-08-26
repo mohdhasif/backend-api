@@ -517,3 +517,55 @@ Array
 )
 
 
+2025-08-26 09:10:26 - Received Data:
+Array
+(
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [phone] => 01123119384
+    [portfolio] => programmer
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Web Developer
+            [2] => Multimedia Designer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-26 09:11:15 - Received Data:
+Array
+(
+    [name] => hasif
+    [email] => hasif@example.com
+    [phone] => 01123119384
+    [portfolio] => dev
+    [roles] => Array
+        (
+            [0] => Programmer
+            [1] => Graphic Designer
+            [2] => 2D / 3D Designer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+
+2025-08-26 09:11:58 - Received Data:
+Array
+(
+    [name] => achick
+    [email] => ac@example.com
+    [phone] => 01123119384
+    [portfolio] => Devs ops
+    [roles] => Array
+        (
+            [0] => Programmer
+        )
+
+    [response] => Freelancer saved & email sent
+)
+
+

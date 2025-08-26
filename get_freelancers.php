@@ -16,6 +16,7 @@ try {
         f.skillset,
         f.availability,
         f.avatar_url,
+        u.avatar_url AS user_avatar_url,
         f.status
     FROM freelancers f
     INNER JOIN users u ON f.user_id = u.id
@@ -26,7 +27,7 @@ try {
     $freelancers = [];
 
     while ($row = $result->fetch_assoc()) {
-        $avatar = $row['avatar_url'] ? $row['avatar_url'] : $default_avatar;
+        $avatar = $row['user_avatar_url'] ? $row['user_avatar_url'] : null;
 
         $freelancers[] = [
             'id' => (int)$row['freelancer_id'],

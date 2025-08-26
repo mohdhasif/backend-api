@@ -48,14 +48,40 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// Update database
-$stmt = $conn->prepare("UPDATE clients SET company_name=?, phone=?, status=?, client_type=?, logo_url=? WHERE id=?");
-$stmt->bind_param("sssssi", $company_name, $phone, $status, $client_type, $logo_url, $client_id);
-
-if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
-} else {
-    echo json_encode(["success" => false, "error" => $stmt->error]);
+// Update database with transaction
+try {
+    // Start transaction
+    $conn->begin_transaction();
+    
+    // Update clients table (without logo_url)
+    $stmt = $conn->prepare("UPDATE clients SET company_name=?, phone=?, status=?, client_type=? WHERE id=?");
+    $stmt->bind_param("ssssi", $company_name, $phone, $status, $client_type, $client_id);
+    
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to update clients table: " . $stmt->error);
+    }
+    
+    // Update users table with logo_url as avatar_url (only if logo_url is provided)
+    if ($logo_url) {
+        $stmt2 = $conn->prepare("UPDATE users SET avatar_url=? WHERE id=(SELECT user_id FROM clients WHERE id=?)");
+        $stmt2->bind_param("si", $logo_url, $client_id);
+        
+        if (!$stmt2->execute()) {
+            throw new Exception("Failed to update users table: " . $stmt2->error);
+        }
+        
+        $stmt2->close();
+    }
+    
+    // Commit transaction
+    $conn->commit();
+    
+    echo json_encode(["success" => true, "message" => "Client updated successfully"]);
+    
+} catch (Exception $e) {
+    // Rollback on error
+    $conn->rollback();
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }
 
 $stmt->close();

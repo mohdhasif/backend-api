@@ -15,3 +15,4 @@ echo To view logs:
 echo   type prayer_cron.log
 echo.
 pause
+

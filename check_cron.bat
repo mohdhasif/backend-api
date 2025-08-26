@@ -56,3 +56,4 @@ echo Live logs:   powershell -Command "Get-Content prayer_cron.log -Wait -Tail 1
 echo.
 
 pause
+

@@ -96,3 +96,4 @@ Write-Host "Live logs:    Get-Content prayer_cron.log -Wait -Tail 1" -Foreground
 Write-Host ""
 
 Read-Host "Press Enter to continue"
+

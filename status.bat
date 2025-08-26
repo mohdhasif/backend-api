@@ -47,3 +47,4 @@ echo Stop:   Get-Job | Stop-Job
 echo Logs:   type prayer_cron.log
 
 pause
+

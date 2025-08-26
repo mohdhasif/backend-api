@@ -23,6 +23,7 @@ $sql = "
         clients.selected_services,
         clients.approved_at,
         clients.logo_url,
+        users.avatar_url,
         clients.progress
     FROM clients
     JOIN users ON clients.user_id = users.id

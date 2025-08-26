@@ -4,6 +4,9 @@ require_once __DIR__ . '/db.php'; // pastikan include db.php
 $user = auth_user($conn);              // <-- pusat
 $auth_user_id = (int)$user['id'];
 
+// echo json_encode('user_id: ' .$user['id'] . ' project_id: ' . $_GET['project_id']);
+// exit;
+
 try {
     $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : 0;
 

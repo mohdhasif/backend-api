@@ -30,3 +30,4 @@ Do
     ' Wait 60 seconds before next run
     WScript.Sleep 60000
 Loop
+

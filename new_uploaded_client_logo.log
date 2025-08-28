@@ -406,3 +406,165 @@ Array
 )
 
 
+2025-08-26 13:43:55 - Received Data:
+Array
+(
+)
+
+
+2025-08-26 13:44:03 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 11:55:46 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php68BD.tmp
+            [error] => 0
+            [size] => 29822
+        )
+
+)
+
+
+2025-08-28 12:38:01 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php18D2.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+
+2025-08-28 12:39:05 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php140B.tmp
+            [error] => 0
+            [size] => 29822
+        )
+
+)
+
+
+2025-08-28 12:39:15 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:39:22 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php56F1.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+
+2025-08-28 12:40:03 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\phpF4E8.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+
+2025-08-28 12:41:33 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php55D1.tmp
+            [error] => 0
+            [size] => 3747
+        )
+
+)
+
+
+2025-08-28 12:43:54 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php7C2C.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+
+2025-08-28 12:45:49 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php3BDF.tmp
+            [error] => 0
+            [size] => 3747
+        )
+
+)
+
+
+2025-08-28 12:56:32 - Received Data:
+Array
+(
+    [logo] => Array
+        (
+            [name] => logo_1.jpg
+            [full_path] => logo_1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\phpC15.tmp
+            [error] => 0
+            [size] => 3747
+        )
+
+)
+
+

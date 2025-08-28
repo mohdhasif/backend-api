@@ -16,6 +16,9 @@ $logFile = __DIR__ . '/update_freelancer.log';
 $logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_POST, true) . "\n\n";
 file_put_contents($logFile, $logContent, FILE_APPEND);
 
+$logContent = date('Y-m-d H:i:s') . " - Received Files:\n" . print_r($_FILES, true) . "\n\n";
+file_put_contents($logFile, $logContent, FILE_APPEND);
+
 // Ambil data dari form
 $freelancer_id = $_POST['freelancer_id'] ?? null;
 $name = $_POST['name'] ?? '';
@@ -44,8 +47,8 @@ if (!$user_id) {
 }
 
 // Jika ada avatar baru dihantar sebagai fail
-if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-    $avatar = $_FILES['logo'];
+if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+    $avatar = $_FILES['avatar'];
 
     $fileName = basename($avatar['name']);
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);

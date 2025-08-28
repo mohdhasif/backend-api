@@ -72,6 +72,14 @@ try {
     $top3 = array_slice($avatars, 0, 3);
     $extra = max(0, ((int)$r['freelancer_count']) - count($top3));
 
+    // Determine status based on progress percentage
+    $status = 'pending';
+    if ($percent === 100) {
+      $status = 'complete';
+    } elseif ($percent > 0) {
+      $status = 'ongoing';
+    }
+
     $out[] = [
       "project_id"         => (int)$r["project_id"],
       "project_title"      => $r["project_title"],
@@ -80,6 +88,7 @@ try {
       "total_tasks"        => $total,
       "completed_tasks"    => $completed,
       "progress_percent"   => $percent,
+      "status"             => $status,
       "freelancer_count"   => (int)$r["freelancer_count"],
       "freelancer_avatars" => $top3,
       "extra_freelancers"  => $extra,

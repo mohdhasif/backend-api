@@ -264,3 +264,240 @@ Array
 )
 
 
+2025-08-28 11:56:02 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 11:56:28 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 11:58:20 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:00:33 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:01:06 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:01:30 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:03:17 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:03:24 - Received Data:
+Array
+(
+)
+
+
+2025-08-28 12:07:05 - Received Data:
+Array
+(
+    [freelancer_id] => 30
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [skillset] => Programmer,Web Developer,Multimedia Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:07:48 - Received Data:
+Array
+(
+    [freelancer_id] => 30
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [skillset] => Programmer,Web Developer,Multimedia Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:09:53 - Received Data:
+Array
+(
+    [freelancer_id] => 31
+    [name] => hasif
+    [email] => hasif@example.com
+    [skillset] => Programmer,Graphic Designer,2D / 3D Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:09:53 - Received Data:
+
+
+2025-08-28 12:11:50 - Received Data:
+Array
+(
+    [freelancer_id] => 31
+    [name] => hasif
+    [email] => hasif@example.com
+    [skillset] => Programmer,Graphic Designer,2D / 3D Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:11:50 - Received Files:
+Array
+(
+    [avatar] => Array
+        (
+            [name] => avatar_31.jpg
+            [full_path] => avatar_31.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php1E61.tmp
+            [error] => 0
+            [size] => 3747
+        )
+
+)
+
+
+2025-08-28 12:12:36 - Received Data:
+Array
+(
+    [freelancer_id] => 31
+    [name] => hasif
+    [email] => hasif@example.com
+    [skillset] => Programmer,Graphic Designer,2D / 3D Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:12:36 - Received Files:
+Array
+(
+    [avatar] => Array
+        (
+            [name] => avatar_31.jpg
+            [full_path] => avatar_31.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\phpD34B.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+
+2025-08-28 12:13:09 - Received Data:
+Array
+(
+    [freelancer_id] => 31
+    [name] => hasif
+    [email] => hasif@example.com
+    [skillset] => Programmer,Graphic Designer,2D / 3D Designer
+    [availability] => 1
+    [status] => approved
+    [avatar_url] => /uploads/avatars/avatar_31_1756383156.jpg
+)
+
+
+2025-08-28 12:13:09 - Received Files:
+Array
+(
+)
+
+
+2025-08-28 12:37:30 - Received Data:
+Array
+(
+    [freelancer_id] => 30
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [skillset] => Programmer,Web Developer,Multimedia Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 12:37:30 - Received Files:
+Array
+(
+    [avatar] => Array
+        (
+            [name] => avatar_30.jpg
+            [full_path] => avatar_30.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php9F6B.tmp
+            [error] => 0
+            [size] => 3747
+        )
+
+)
+
+
+2025-08-28 12:37:43 - Received Data:
+Array
+(
+    [freelancer_id] => 30
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [skillset] => Programmer,Web Developer,Multimedia Designer
+    [availability] => 1
+    [status] => approved
+    [avatar] => /uploads/avatars/avatar_30_1756384650.jpg
+)
+
+
+2025-08-28 12:37:43 - Received Files:
+Array
+(
+)
+
+
+2025-08-28 13:08:42 - Received Data:
+Array
+(
+    [freelancer_id] => 30
+    [name] => Mohd hasif
+    [email] => mohd@example.com
+    [skillset] => Programmer,Web Developer,Multimedia Designer
+    [availability] => 1
+    [status] => approved
+)
+
+
+2025-08-28 13:08:42 - Received Files:
+Array
+(
+    [avatar] => Array
+        (
+            [name] => avatar_30.jpg
+            [full_path] => avatar_30.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\Users\mohdhasif\AppData\Local\Temp\php3087.tmp
+            [error] => 0
+            [size] => 4740
+        )
+
+)
+
+

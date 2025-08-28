@@ -13,11 +13,7 @@ if ($conn->connect_error) {
 
 // Log input
 $logFile = __DIR__ . '/new_updated_client.log';
-$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_POST['client_id'], true) . "\n\n";
-file_put_contents($logFile, $logContent, FILE_APPEND);
-
-$logFile = __DIR__ . '/new_uploaded_client_logo.log';
-$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_FILES, true) . "\n\n";
+$logContent = date('Y-m-d H:i:s') . " - Received Data:\n" . print_r($_POST, true) . "\n\n";
 file_put_contents($logFile, $logContent, FILE_APPEND);
 
 // Get form fields
@@ -27,24 +23,29 @@ $phone = $_POST['phone'] ?? '';
 $status = $_POST['status'] ?? 'pending';
 $client_type = $_POST['client_type'] ?? 'company';
 
-$logo_url = null;
-$logo_url = $_POST['logo_url'] ?? null;
+$avatar_url = $_POST['logo'] ?? null;
 
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-    $logo = $_FILES['logo'];
-    $path = $uploadDir . basename($logo['name']);
+    $avatar = $_FILES['logo'];
 
-    $domain = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
-    $domain .= "://" . $_SERVER['HTTP_HOST']; // contoh: https://yourdomain.com
+    $fileName = basename($avatar['name']);
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+    $newFileName = 'logo_' . $client_id . '_' . time() . '.' . $fileExtension;
 
-    $relativePath = $uploadDir . basename($logo['name']);
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-    // $logo_url = $domain . '/' . $relativePath;
-    $logo_url = '/' . $relativePath;
-    if (move_uploaded_file($logo['tmp_name'], $path)) {
-        // echo json_encode(['success' => true, 'message' => 'Logo uploaded successfully', 'path' => $path]);
+    $path = $uploadDir . $newFileName;
+
+    if (move_uploaded_file($avatar['tmp_name'], $path)) {
+        $domain = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $domain .= "://" . $_SERVER['HTTP_HOST'];
+        // $avatar_url = $domain . '/' . $path;
+        $avatar_url = '/' . $path;
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to move uploaded file']);
+        echo json_encode(['success' => false, 'error' => 'Failed to move uploaded avatar']);
+        exit;
     }
 }
 
@@ -52,32 +53,31 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 try {
     // Start transaction
     $conn->begin_transaction();
-    
+
     // Update clients table (without logo_url)
     $stmt = $conn->prepare("UPDATE clients SET company_name=?, phone=?, status=?, client_type=? WHERE id=?");
     $stmt->bind_param("ssssi", $company_name, $phone, $status, $client_type, $client_id);
-    
+
     if (!$stmt->execute()) {
         throw new Exception("Failed to update clients table: " . $stmt->error);
     }
-    
+
     // Update users table with logo_url as avatar_url (only if logo_url is provided)
-    if ($logo_url) {
+    if ($avatar_url) {
         $stmt2 = $conn->prepare("UPDATE users SET avatar_url=? WHERE id=(SELECT user_id FROM clients WHERE id=?)");
-        $stmt2->bind_param("si", $logo_url, $client_id);
-        
+        $stmt2->bind_param("si", $avatar_url, $client_id);
+
         if (!$stmt2->execute()) {
             throw new Exception("Failed to update users table: " . $stmt2->error);
         }
-        
+
         $stmt2->close();
     }
-    
+
     // Commit transaction
     $conn->commit();
-    
+
     echo json_encode(["success" => true, "message" => "Client updated successfully"]);
-    
 } catch (Exception $e) {
     // Rollback on error
     $conn->rollback();

@@ -68,3 +68,5 @@ try {
         $conn->close();
     }
 }
+
+// publish

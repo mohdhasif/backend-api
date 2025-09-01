@@ -1,16 +1,10 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-
-// Sambung ke DB
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
-    exit();
-}
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
 try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
     $stmt = $conn->prepare("
     SELECT
     p.id,
@@ -35,11 +29,12 @@ try {
         $projects[] = $row;
     }
 
-    echo json_encode($projects);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        "error" => "Gagal mendapatkan projek",
-        "details" => $e->getMessage()
+    json_ok([
+        "data" => $projects
     ]);
+
+} catch (Exception $e) {
+    json_error(500, 'Gagal mendapatkan projek: ' . $e->getMessage());
 }
+
+// publish

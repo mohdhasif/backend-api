@@ -1,13 +1,10 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db = 'finiteapp'; // Ganti dengan nama database kamu
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die('Connection failed: ' . $conn->connect_error);
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Logo Upload
 $uploadDir = 'uploads/';
@@ -53,12 +50,17 @@ $stmt->bind_param(
     $selected_services
 );
 
-if ($stmt->execute()) {
-    echo "Client berjaya ditambah!";
-} else {
-    echo "Gagal tambah client: " . $stmt->error;
-}
+    if ($stmt->execute()) {
+        json_ok([
+            "message" => "Client berjaya ditambah!",
+            "client_id" => $conn->insert_id
+        ]);
+    } else {
+        json_error(500, "Gagal tambah client: " . $stmt->error);
+    }
 
-$stmt->close();
-$conn->close();
-?>
+    $stmt->close();
+
+} catch (Exception $e) {
+    json_error(500, 'Database error: ' . $e->getMessage());
+}

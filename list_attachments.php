@@ -28,3 +28,5 @@ try {
   http_response_code(500);
   echo json_encode(['success' => false, 'error' => 'Failed to list attachments']);
 }
+
+// publish

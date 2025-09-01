@@ -45,3 +45,5 @@ try {
 } catch (\Throwable $th) {
     echo json_encode($th->getMessage());
 }
+
+// publish

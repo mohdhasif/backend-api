@@ -7,16 +7,12 @@ require 'PHPMailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
-// DB connection
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
-    exit();
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Input
 $input = json_decode(file_get_contents("php://input"), true);
@@ -50,11 +46,9 @@ $client_type = $input["client_type"] ?? $input["clientType"] ?? 'company';
 $company_name = $client_type === 'company' ? ($input["company_name"] ?? $input["companyName"] ?? '') : null;
 $selectedServices = $input["selected_services"] ?? $input["selectedServices"] ?? [];
 
-if (!$name || !$email || !$phone || !is_array($selectedServices)) {
-    http_response_code(400);
-    echo json_encode(["error" => "Missing or invalid fields"]);
-    exit();
-}
+    if (!$name || !$email || !$phone || !is_array($selectedServices)) {
+        json_error(400, "Missing or invalid fields");
+    }
 
 // Translate service IDs
 $serviceNames = [];
@@ -71,27 +65,23 @@ $password_hash = MD5($password_raw);
 $role = "client";
 $created_at = date("Y-m-d H:i:s");
 
-// Insert user
-$stmtUser = $conn->prepare("INSERT INTO users (name, email, password, role, created_at, temp_password) VALUES (?, ?, ?, ?, ?, ?)");
-$stmtUser->bind_param("ssssss", $name, $email, $password_hash, $role, $created_at, $password_raw);
-if (!$stmtUser->execute()) {
-    http_response_code(500);
-    echo json_encode(["error" => "Failed to insert user"]);
-    exit();
-}
-$user_id = $stmtUser->insert_id;
+    // Insert user
+    $stmtUser = $conn->prepare("INSERT INTO users (name, email, password, role, created_at, temp_password) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmtUser->bind_param("ssssss", $name, $email, $password_hash, $role, $created_at, $password_raw);
+    if (!$stmtUser->execute()) {
+        json_error(500, "Failed to insert user");
+    }
+    $user_id = $stmtUser->insert_id;
 
-// Insert client (temporary logo_url kosong dulu)
-$status = 'pending';
-$empty_logo = '';
-$stmtClient = $conn->prepare("INSERT INTO clients (user_id, company_name, phone, status, client_type, selected_services, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmtClient->bind_param("issssss", $user_id, $company_name, $phone, $status, $client_type, $serviceListText, $empty_logo);
-if (!$stmtClient->execute()) {
-    http_response_code(500);
-    echo json_encode(["error" => "Failed to insert client"]);
-    exit();
-}
-$client_id = $stmtClient->insert_id;
+    // Insert client (temporary logo_url kosong dulu)
+    $status = 'pending';
+    $empty_logo = '';
+    $stmtClient = $conn->prepare("INSERT INTO clients (user_id, company_name, phone, status, client_type, selected_services, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmtClient->bind_param("issssss", $user_id, $company_name, $phone, $status, $client_type, $serviceListText, $empty_logo);
+    if (!$stmtClient->execute()) {
+        json_error(500, "Failed to insert client");
+    }
+    $client_id = $stmtClient->insert_id;
 
 // ✅ Generate logo
 function generateClientLogo($text, $clientId) {
@@ -176,9 +166,12 @@ sendMail("mohdhasif24181@gmail.com", "New Discovery Form", $adminBody);
 $clientBody = "Hi $name,\n\nThank you for submitting the discovery form.\nYour request is pending approval.\n\nSelected Services:\n$serviceListText\n\nWe’ll notify you once approved.\n\n- finiteApp Team";
 sendMail($email, "Discovery Form Received", $clientBody);
 
-// Done
-echo json_encode([
-    "success" => true,
-    "message" => "Form submitted. Pending approval.",
-    "logo_url" => $logo_url,
-]);
+    // Done
+    json_ok([
+        "message" => "Form submitted. Pending approval.",
+        "logo_url" => $logo_url,
+    ]);
+
+} catch (Exception $e) {
+    json_error(500, 'Database error: ' . $e->getMessage());
+}

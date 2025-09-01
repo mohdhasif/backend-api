@@ -1,13 +1,10 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db = 'finiteapp';
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die('Connection failed: ' . $conn->connect_error);
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Avatar Upload
 $uploadDir = 'uploads/avatars/';
@@ -45,27 +42,34 @@ $userStmt = $conn->prepare("
 
 $userStmt->bind_param("ssssss", $name, $email, $password_hash, $role, $created_at, $temp_password);
 
-if ($userStmt->execute()) {
-    $user_id = $userStmt->insert_id;
+    if ($userStmt->execute()) {
+        $user_id = $userStmt->insert_id;
 
-    // Insert into freelancers
-    $freelancerStmt = $conn->prepare("
-        INSERT INTO freelancers (user_id, skillset, availability, avatar_url)
-        VALUES (?, ?, ?, ?)
-    ");
-    $freelancerStmt->bind_param("isis", $user_id, $skillset, $availability, $avatarUrl);
+        // Insert into freelancers
+        $freelancerStmt = $conn->prepare("
+            INSERT INTO freelancers (user_id, skillset, availability, avatar_url)
+            VALUES (?, ?, ?, ?)
+        ");
+        $freelancerStmt->bind_param("isis", $user_id, $skillset, $availability, $avatarUrl);
 
-    if ($freelancerStmt->execute()) {
-        echo "Freelancer berjaya ditambah!";
+        if ($freelancerStmt->execute()) {
+            json_ok([
+                "message" => "Freelancer berjaya ditambah!",
+                "user_id" => $user_id,
+                "freelancer_id" => $freelancerStmt->insert_id,
+                "temp_password" => $temp_password
+            ]);
+        } else {
+            json_error(500, "Gagal tambah freelancer: " . $freelancerStmt->error);
+        }
+
+        $freelancerStmt->close();
     } else {
-        echo "Gagal tambah freelancer: " . $freelancerStmt->error;
+        json_error(500, "Gagal tambah pengguna: " . $userStmt->error);
     }
 
-    $freelancerStmt->close();
-} else {
-    echo "Gagal tambah pengguna: " . $userStmt->error;
-}
+    $userStmt->close();
 
-$userStmt->close();
-$conn->close();
-?>
+} catch (Exception $e) {
+    json_error(500, 'Database error: ' . $e->getMessage());
+}

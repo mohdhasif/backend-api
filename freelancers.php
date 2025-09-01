@@ -128,3 +128,5 @@ try {
         'message' => "Mailer Error: {$mail->ErrorInfo}"
     ]);
 }
+
+// publish

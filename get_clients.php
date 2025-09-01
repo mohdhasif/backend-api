@@ -1,14 +1,10 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
-// Sambung ke DB
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
-    exit();
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Fetch all clients with user status
 $sql = "
@@ -31,13 +27,23 @@ $sql = "
     ORDER BY users.created_at DESC
 ";
 
-$result = $conn->query($sql);
+    $result = $conn->query($sql);
 
-$clients = [];
-while ($row = $result->fetch_assoc()) {
-    $clients[] = $row;
+    if ($result) {
+        $clients = [];
+        while ($row = $result->fetch_assoc()) {
+            $clients[] = $row;
+        }
+
+        json_ok([
+            "data" => $clients
+        ]);
+    } else {
+        json_error(500, $conn->error);
+    }
+
+} catch (Exception $e) {
+    json_error(500, 'Database error: ' . $e->getMessage());
 }
 
-echo json_encode($clients);
-$conn->close();
-?>
+// publish

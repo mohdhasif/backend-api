@@ -33,3 +33,5 @@ if ($result->num_rows === 0) {
 
 $project = $result->fetch_assoc();
 echo json_encode($project);
+
+// publish

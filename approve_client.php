@@ -6,64 +6,48 @@ require 'PHPMailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-
-// DB config
-$host = "localhost";
-$dbname = "finiteapp";
-$user = "root";
-$pass = "";
-$charset = "utf8mb4";
-
-// Connect PDO
-$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
-$options = [
-  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-];
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
 try {
-  $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (PDOException $e) {
-  echo json_encode(['success' => false, 'error' => 'Database connection failed']);
-  exit;
-}
+  // Dapatkan koneksi database dari db.php
+  $conn = get_db_connection();
 
-// Read input
-$input = json_decode(file_get_contents("php://input"), true);
+  // Read input
+  $input = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($input['client_id'])) {
-  echo json_encode(['success' => false, 'error' => 'Client ID is required']);
-  exit;
-}
+  if (!isset($input['client_id'])) {
+    json_error(400, 'Client ID is required');
+  }
 
-$client_id = (int) $input['client_id'];
+  $client_id = (int) $input['client_id'];
 
-try {
   // Get client & user info
-  $stmt = $pdo->prepare("
+  $stmt = $conn->prepare("
     SELECT c.id AS client_id, c.status, u.name, u.email, u.temp_password 
     FROM clients c 
     LEFT JOIN users u ON c.user_id = u.id 
-    WHERE c.id = :client_id
+    WHERE c.id = ?
   ");
-  $stmt->execute([':client_id' => $client_id]);
-  $data = $stmt->fetch();
+  $stmt->bind_param("i", $client_id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $data = $res->fetch_assoc();
+  $stmt->close();
 
   if (!$data) {
-    echo json_encode(['success' => false, 'error' => 'Client not found']);
-    exit;
+    json_error(404, 'Client not found');
   }
 
   if ($data['status'] === 'active') {
-    echo json_encode(['success' => false, 'error' => 'Client already approved']);
-    exit;
+    json_error(400, 'Client already approved');
   }
 
   // Update client status
-  $updateStmt = $pdo->prepare("UPDATE clients SET status = 'active', approved_at = NOW() WHERE id = :id");
-  $updateStmt->execute([':id' => $client_id]);
+  $updateStmt = $conn->prepare("UPDATE clients SET status = 'active', approved_at = NOW() WHERE id = ?");
+  $updateStmt->bind_param("i", $client_id);
+  $updateStmt->execute();
+  $updateStmt->close();
 
   // Prepare email
   $to = $data['email'];
@@ -106,13 +90,15 @@ try {
     error_log("Email error to $to: " . $mail->ErrorInfo);
   }
 
-  echo json_encode([
-    'success' => true,
+  json_ok([
     'email_sent' => $emailSent,
     'message' => $emailSent
       ? 'Client approved and email sent'
       : 'Client approved but email failed',
   ]);
+
 } catch (Exception $e) {
-  echo json_encode(['success' => false, 'error' => 'Approval failed: ' . $e->getMessage()]);
+  json_error(500, 'Approval failed: ' . $e->getMessage());
 }
+
+// publish

@@ -41,3 +41,5 @@ if ($result->num_rows === 0) {
 
 $task = $result->fetch_assoc();
 echo json_encode($task, JSON_UNESCAPED_UNICODE);
+
+// publish

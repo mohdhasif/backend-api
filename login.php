@@ -1,13 +1,10 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
 try {
-    // DB connect
-    $conn = new mysqli("127.0.0.1", "root", "", "finiteapp");
-    $conn->set_charset("utf8mb4");
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
     // Input
     $input = json_decode(file_get_contents("php://input"), true);
@@ -57,62 +54,23 @@ try {
     $userId = (int)$user['id'];
     $role = $user['role'];
 
-    // Generate token baru (per-device/per-login)
-    // generate_token() ada dalam db.php — kalau fail include, duplicate function simple di sini
-    if (!function_exists('generate_token')) {
-        function generate_token(): string
-        {
-            try {
-                return bin2hex(random_bytes(32));
-            } catch (Throwable $e) {
-                return bin2hex(openssl_random_pseudo_bytes(32));
-            }
-        }
-    }
+    // Generate token baru menggunakan fungsi dari db.php
     $token = generate_token();
 
-    // Role rules:
-    // - client, freelancer: single-device => revoke/hapus semua token lama sebelum insert baru
-    // - admin: multi-device => JANGAN revoke; benarkan tambah token baru
-    if ($role === 'client' || $role === 'freelancer') {
-        // Revoke semua token lama
-        $conn->query("UPDATE user_tokens SET revoked = 1 WHERE user_id = {$userId} AND revoked = 0");
-        // (Option: atau DELETE FROM user_tokens WHERE user_id = ?)
-    }
-
-    // Insert token baru
-    $stmt = $conn->prepare("
-        INSERT INTO user_tokens (user_id, token, device_id, user_agent, created_at)
-        VALUES (?, ?, ?, ?, NOW())
-    ");
-    $stmt->bind_param("isss", $userId, $token, $installId, $userAgent);
-    $stmt->execute();
-    $stmt->close();
-
-    // Backward compatibility:
-    // Untuk endpoint lama yang masih semak users.token:
-    // - client/freelancer: update users.token kepada token baru (supaya device lain auto-logout)
-    // - admin: JANGAN update users.token (supaya device lama kekal hidup walaupun login dari device baru)
-    if ($role === 'client' || $role === 'freelancer') {
-        $stmt = $conn->prepare("UPDATE users SET token = ? WHERE id = ?");
-        $stmt->bind_param("si", $token, $userId);
-        $stmt->execute();
-        $stmt->close();
-    }
-    // admin: biarkan users.token apa adanya.
+    // Gunakan fungsi issue_token dari db.php untuk handle token management
+    $token = issue_token($conn, $userId, $role, $installId, $userAgent);
 
     // Response
     unset($user['password']);
-    echo json_encode([
-        "success" => true,
+    json_ok([
         "message" => "Login success",
         "user" => $user,
         "token" => $token
     ]);
 } catch (mysqli_sql_exception $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "error" => "Database error", "details" => $e->getMessage()]);
+    json_error(500, $e->getMessage(), ["details" => $e->getMessage()]);
 } catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "error" => "Unexpected error", "details" => $e->getMessage()]);
+    json_error(500, "Unexpected error", ["details" => $e->getMessage()]);
 }
+
+// publish

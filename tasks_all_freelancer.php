@@ -192,3 +192,5 @@ try {
         'error'   => $e->getMessage(),  // promote details
     ], JSON_UNESCAPED_UNICODE);
 }
+
+// publish

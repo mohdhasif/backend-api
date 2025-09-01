@@ -179,3 +179,5 @@ try {
         'details' => $e->getMessage()
     ]);
 }
+
+// publish

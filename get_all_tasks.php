@@ -1,20 +1,10 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
-// Database connection
-$host = "localhost";
-$dbname = "finiteapp";
-$user = "root";
-$pass = "";
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "error" => "Database connection failed"]);
-    exit();
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // SQL Query (JOIN tasks → projects → clients → users)
 $sql = "
@@ -47,24 +37,22 @@ LEFT JOIN users ON clients.user_id = users.id
 ORDER BY tasks.created_at DESC
 ";
 
-$result = $conn->query($sql);
+    $result = $conn->query($sql);
 
-if ($result) {
-    $tasks = [];
+    if ($result) {
+        $tasks = [];
 
-    while ($row = $result->fetch_assoc()) {
-        $tasks[] = $row;
+        while ($row = $result->fetch_assoc()) {
+            $tasks[] = $row;
+        }
+
+        json_ok([
+            "data" => $tasks
+        ]);
+    } else {
+        json_error(500, $conn->error);
     }
 
-    echo json_encode([
-        "success" => true,
-        "data" => $tasks
-    ]);
-} else {
-    echo json_encode([
-        "success" => false,
-        "error" => $conn->error
-    ]);
+} catch (Exception $e) {
+    json_error(500, 'Database error: ' . $e->getMessage());
 }
-
-$conn->close();

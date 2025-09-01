@@ -1,15 +1,12 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
 $uploadDir = "uploads/avatars/";
 
-// DB connection
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "error" => "Database connection failed"]);
-    exit;
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Log input untuk debugging
 $logFile = __DIR__ . '/update_freelancer.log';
@@ -28,10 +25,9 @@ $availability = isset($_POST['availability']) ? (int)$_POST['availability'] : 1;
 $status = $_POST['status'] ?? 'pending';
 $avatar_url = $_POST['avatar'] ?? null;
 
-if (!$freelancer_id) {
-    echo json_encode(['success' => false, 'error' => 'freelancer_id is required']);
-    exit;
-}
+    if (!$freelancer_id) {
+        json_error(400, 'freelancer_id is required');
+    }
 
 // Dapatkan user_id berdasarkan freelancer_id
 $getUserStmt = $conn->prepare("SELECT user_id FROM freelancers WHERE id = ?");
@@ -41,10 +37,9 @@ $getUserStmt->bind_result($user_id);
 $getUserStmt->fetch();
 $getUserStmt->close();
 
-if (!$user_id) {
-    echo json_encode(['success' => false, 'error' => 'User not found for this freelancer']);
-    exit;
-}
+    if (!$user_id) {
+        json_error(404, 'User not found for this freelancer');
+    }
 
 // Jika ada avatar baru dihantar sebagai fail
 if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
@@ -66,12 +61,10 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
         // $avatar_url = $domain . '/' . $path;
         $avatar_url = '/' . $path;
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to move uploaded avatar']);
-        exit;
+        json_error(500, 'Failed to move uploaded avatar');
     }
 }
 
-try {
     // Start transaction
     $conn->begin_transaction();
     
@@ -100,11 +93,13 @@ try {
     // Commit transaction
     $conn->commit();
     
-    echo json_encode(["success" => true, "message" => "Freelancer updated successfully"]);
+    json_ok([
+        "message" => "Freelancer updated successfully",
+        "avatar_url" => $avatar_url
+    ]);
+
 } catch (Exception $e) {
     // Rollback on error
     $conn->rollback();
-    echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    json_error(500, $e->getMessage());
 }
-
-$conn->close();

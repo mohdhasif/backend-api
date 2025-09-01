@@ -29,3 +29,5 @@ if (move_uploaded_file($logo['tmp_name'], $targetFile)) {
 } else {
     echo json_encode(['success' => false, 'error' => 'Failed to move uploaded file']);
 }
+
+// publish

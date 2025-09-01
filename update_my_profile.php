@@ -11,6 +11,9 @@ function read_json_body(): array
 }
 
 try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
+    
     // Auth by token (db.php already sets CORS + JSON header)
     $me  = require_auth($conn);
     $uid = (int)$me['id'];
@@ -45,37 +48,26 @@ try {
 
     $avatarUrlSaved = null;
 
-    // Jika ada fail avatar, proses
+    // Jika ada fail avatar, proses (mengikut pattern dari update_freelancer.php)
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['avatar'];
+        $avatar = $_FILES['avatar'];
 
-        // Validasi ringkas
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($ext, $allowed, true)) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Unsupported file type']);
-            exit;
+        $fileName = basename($avatar['name']);
+        $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+        $newFileName = 'avatar_' . $uid . '_' . time() . '.' . $fileExtension;
+
+        $uploadDir = "uploads/avatars/";
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
         }
 
-        $dir = 'uploads/avatars';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
+        $path = $uploadDir . $newFileName;
 
-        $safeName = 'u' . $uid . '_' . time() . '.' . $ext;
-        $dest = $dir . '/' . $safeName;
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Failed to store file']);
-            exit;
+        if (move_uploaded_file($avatar['tmp_name'], $path)) {
+            $avatarUrlSaved = '/' . $path;
+        } else {
+            json_error(500, 'Failed to move uploaded avatar');
         }
-
-        // Build URL ikut host semasa
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $base   = $scheme . '://' . $host;
-        $avatarUrlSaved = '/uploads/avatars/' . $safeName;
     } elseif ($avatarUrlIncoming) {
         // Tiada fail baru, retain url lama
         $avatarUrlSaved = $avatarUrlIncoming;
@@ -129,8 +121,11 @@ try {
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
 
-    echo json_encode(['success' => true, 'message' => 'Profile updated', 'data' => $row]);
+    json_ok([
+        'message' => 'Profile updated', 
+        'data' => $row,
+        'avatar_url' => $avatarUrlSaved
+    ]);
 } catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    json_error(500, $e->getMessage());
 }

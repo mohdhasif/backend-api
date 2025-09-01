@@ -1,15 +1,12 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
+// Include db.php untuk fungsi helper
+require_once __DIR__ . '/db.php';
 
 $uploadDir = "uploads/logo/";
 
-// DB connection
-$conn = new mysqli("localhost", "root", "", "finiteapp");
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "error" => "Database connection failed"]);
-    exit;
-}
+try {
+    // Dapatkan koneksi database dari db.php
+    $conn = get_db_connection();
 
 // Log input
 $logFile = __DIR__ . '/new_updated_client.log';
@@ -44,13 +41,11 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         // $avatar_url = $domain . '/' . $path;
         $avatar_url = '/' . $path;
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to move uploaded avatar']);
-        exit;
+        json_error(500, 'Failed to move uploaded avatar');
     }
 }
 
-// Update database with transaction
-try {
+    // Update database with transaction
     // Start transaction
     $conn->begin_transaction();
 
@@ -77,12 +72,13 @@ try {
     // Commit transaction
     $conn->commit();
 
-    echo json_encode(["success" => true, "message" => "Client updated successfully"]);
+    json_ok([
+        "message" => "Client updated successfully",
+        "logo_url" => $avatar_url
+    ]);
+
 } catch (Exception $e) {
     // Rollback on error
     $conn->rollback();
-    echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    json_error(500, $e->getMessage());
 }
-
-$stmt->close();
-$conn->close();

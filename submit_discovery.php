@@ -9,9 +9,9 @@ use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json');
 
-// Include db.php untuk fungsi helper
+// Include db.php for helper functions
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/push_helper.php'; // untuk push notification
+require_once __DIR__ . '/push_helper.php'; // for push notification
 
 // Log file setup
 $logFile = __DIR__ . '/submit_discovery.log';
@@ -47,7 +47,7 @@ try {
     $input = json_decode(file_get_contents("php://input"), true);
     logInfo("Received discovery form data", $input);
 
-    // Lookup untuk service
+            // Lookup for service
     $serviceLookup = [
         '1' => 'Branding – Brand Identity',
         '2' => 'Social Media – Content / Influencer / Strategy',
@@ -178,7 +178,7 @@ try {
         logInfo("Logo generated and updated successfully", ['client_id' => $client_id, 'logo_url' => $logo_url]);
     }
 
-    // PHPMailer helper dengan anti-spam configuration
+            // PHPMailer helper with anti-spam configuration
     function sendMail($to, $subject, $body, $recipientName = '', $isAdmin = false)
     {
         $mail = new PHPMailer(true);
@@ -207,7 +207,7 @@ try {
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = '8bit';
 
-            // Headers untuk elak spam
+            // Headers to prevent spam
             $mail->addCustomHeader('X-Priority', '3');
             $mail->addCustomHeader('X-MSMail-Priority', 'Normal');
             $mail->addCustomHeader('Importance', 'Normal');

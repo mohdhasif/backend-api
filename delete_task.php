@@ -15,7 +15,7 @@ if (!$task_id) {
 
 $user_id = $auth_user_id;
 
-// Pastikan task milik client
+    // Ensure task belongs to client
 $query = "
 SELECT t.id
 FROM tasks t

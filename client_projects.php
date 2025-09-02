@@ -5,7 +5,7 @@ try {
     $user = auth_user($conn);              // <-- pusat
     $auth_user_id = (int)$user['id'];
 
-    // --- Ambil projek berdasarkan client_id ---
+    // --- Get projects based on client_id ---
     $stmt = $conn->prepare("
         SELECT projects.id, projects.title, projects.description, projects.status, projects.progress, projects.created_at
         FROM projects

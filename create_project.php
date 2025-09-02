@@ -3,12 +3,12 @@
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 
-require_once __DIR__ . '/db.php'; // gunakan db.php anda
+require_once __DIR__ . '/db.php'; // use your db.php
 require_once __DIR__ . '/push_helper.php';
 
 try {
   // ✅ Auth
-  $user = require_auth($conn); // pastikan fungsi ini wujud dalam db.php seperti yang anda guna
+  $user = require_auth($conn); // ensure this function exists in db.php as you use
 
   // ✅ Read JSON body
   $raw = file_get_contents('php://input');
@@ -30,7 +30,7 @@ try {
   $status      = $data['status'] ?? 'pending';
   $progress    = (int)($data['progress'] ?? 0);
 
-  // Optional: support due_date (YYYY-MM-DD) jika anda mahu simpan
+  // Optional: support due_date (YYYY-MM-DD) if you want to save
   $due_date    = $data['due_date'] ?? null;
 
   if ($title === '' || $client_id <= 0) {
@@ -47,8 +47,8 @@ try {
   }
 
   // ✅ Prepared statement (nullable bindings)
-  // Nota: Sesuaikan nama kolum ikut table anda
-  // Contoh table `projects` ada kolum:
+  // Note: Adjust column names according to your table
+  // Example table `projects` has columns:
   // id, client_id, title, description, priority, start_at (DATETIME NULL), end_at (DATETIME NULL),
   // status, progress, due_date (DATE NULL), created_at
   $stmt = $conn->prepare("

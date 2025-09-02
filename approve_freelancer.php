@@ -8,9 +8,9 @@ use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json');
 
-// Include db.php untuk fungsi helper
+// Include db.php for helper functions
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/push_helper.php'; // untuk push notification
+require_once __DIR__ . '/push_helper.php'; // for push notification
 
 // Log file setup
 $logFile = __DIR__ . '/approve_freelancer.log';
@@ -143,7 +143,7 @@ try {
       $mail->CharSet = 'UTF-8';
       $mail->Encoding = '8bit';
       
-      // Headers untuk elak spam
+              // Headers to prevent spam
       $mail->addCustomHeader('X-Priority', '3');
       $mail->addCustomHeader('X-MSMail-Priority', 'Normal');
       $mail->addCustomHeader('Importance', 'Normal');
@@ -200,7 +200,7 @@ try {
       ]);
     }
 
-    // Push notification ke admin
+            // Push notification to admin
     try {
       logInfo("Preparing push notification to admins");
       

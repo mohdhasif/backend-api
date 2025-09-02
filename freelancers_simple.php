@@ -26,7 +26,7 @@ try {
     $per_page  = min(50, max(1, (int)($_GET['per_page'] ?? 20)));
     $offset    = ($page - 1) * $per_page;
 
-    // Whitelist status ikut enum freelancers
+    // Whitelist status according to freelancers enum
     $allowed_status = ['pending', 'approved', 'rejected', 'inactive'];
     if ($status !== '' && !in_array($status, $allowed_status, true)) {
         http_response_code(400);
@@ -34,7 +34,7 @@ try {
         exit;
     }
 
-    // --- Build WHERE (guna alias f = freelancers, u = users) ---
+    // --- Build WHERE (using alias f = freelancers, u = users) ---
     $where  = [];
     $params = [];
     $types  = '';
@@ -57,7 +57,7 @@ try {
         $where[] = "(f.status IN ('approved'))";
     }
 
-    // Contoh kalau nak limit ikut organisasi / scope:
+    // Example if you want to limit by organization / scope:
     // $where[]  = "u.organization_id = ?";
     // $params[] = $user['organization_id'];
     // $types   .= 'i';

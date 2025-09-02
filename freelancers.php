@@ -10,8 +10,8 @@ use PHPMailer\PHPMailer\Exception;
 header('Content-Type: application/json');
 
 // Sambung DB
-require_once __DIR__ . '/db.php'; // pastikan file db.php ada (mysqli $conn)
-require_once __DIR__ . '/push_helper.php'; // untuk push notification
+require_once __DIR__ . '/db.php'; // ensure db.php file exists (mysqli $conn)
+require_once __DIR__ . '/push_helper.php'; // for push notification
 
 // Log file setup
 $logFile = __DIR__ . '/freelancers.log';
@@ -87,10 +87,10 @@ try {
     $stmt->close();
     logInfo("User inserted successfully", ['user_id' => $user_id]);
 
-    // --- Insert ke freelancers ---
-    $skillset = implode(',', $roles); // simpan roles jadi skillset
+            // --- Insert into freelancers ---
+            $skillset = implode(',', $roles); // save roles as skillset
     $stmt2 = $conn->prepare("INSERT INTO freelancers (user_id, skillset, avatar_url) VALUES (?, ?, ?)");
-    $defaultAvatar = null; // boleh fallback kalau perlu
+            $defaultAvatar = null; // can fallback if needed
     $stmt2->bind_param("iss", $user_id, $skillset, $defaultAvatar);
 
     if (!$stmt2->execute()) {
@@ -114,7 +114,7 @@ try {
 $body = <<<EOD
 Hi Admin,
 
-Anda terima satu penyertaan Freelancer baharu:
+        You have received a new Freelancer application:
 
 👤 Nama: $name  
 📧 Email: $email  
@@ -145,7 +145,7 @@ try {
     $mail->isSMTP();
     $mail->Host       = 'mail.finite.my';
     $mail->SMTPAuth   = true;                               // authentication ON
-    $mail->Username   = 'app@finite.my';                    // ikut config anda
+    $mail->Username   = 'app@finite.my';                    // according to your config
     $mail->Password   = 'Marketing123456!';                 // password mailbox
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;        // SSL/TLS
     $mail->Port       = 465;                                // SSL
@@ -156,7 +156,7 @@ try {
     $mail->CharSet = 'UTF-8';                              // Proper charset
     $mail->Encoding = '8bit';                              // Proper encoding
     
-    // Headers untuk elak spam
+            // Headers to prevent spam
     $mail->addCustomHeader('X-Priority', '3');
     $mail->addCustomHeader('X-MSMail-Priority', 'Normal');
     $mail->addCustomHeader('Importance', 'Normal');
@@ -165,13 +165,13 @@ try {
     $mail->addCustomHeader('Precedence', 'bulk');
     $mail->addCustomHeader('X-Auto-Response-Suppress', 'OOF, AutoReply');
 
-    $mail->setFrom('app@finite.my', 'Finite App');          // From mesti domain finite.my
-    $mail->addReplyTo('app@finite.my', 'Finite App');       // atau support@finite.my, pilihan
+    $mail->setFrom('app@finite.my', 'Finite App');          // From must be finite.my domain
+    $mail->addReplyTo('app@finite.my', 'Finite App');       // or support@finite.my, your choice
     
     // $mail->addAddress('mohdhasif24181@gmail.com', 'Mohd Hasif');
     $mail->addAddress('recruitment.finite@gmail.com', 'Finite Marketing');
 
-    // Clean subject dan body untuk elak spam
+            // Clean subject and body to prevent spam
     $cleanSubject = "Freelancer Application - $name";
     $cleanBody = "Dear Admin,\n\n";
     $cleanBody .= "A new freelancer application has been received:\n\n";
@@ -350,7 +350,7 @@ try {
          $freelancerMail->CharSet = 'UTF-8';
          $freelancerMail->Encoding = '8bit';
          
-         // Headers untuk elak spam
+         // Headers to prevent spam
          $freelancerMail->addCustomHeader('X-Priority', '3');
          $freelancerMail->addCustomHeader('X-MSMail-Priority', 'Normal');
          $freelancerMail->addCustomHeader('Importance', 'Normal');

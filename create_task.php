@@ -18,7 +18,7 @@ $project_id  = (int)($input['project_id'] ?? 0);
 
 if (!$title || $project_id <= 0) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Sila isi Title dan pilih Project']);
+            echo json_encode(['success' => false, 'error' => 'Please fill Title and select Project']);
     exit;
 }
 
@@ -35,7 +35,7 @@ if ($start_at && $end_at) {
 }
 
 try {
-    // Pastikan project wujud & ambil client_id
+            // Ensure project exists & get client_id
     $stmt = $conn->prepare("SELECT client_id FROM projects WHERE id = ?");
     $stmt->bind_param("i", $project_id);
     $stmt->execute();

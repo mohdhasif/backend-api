@@ -32,7 +32,7 @@ try {
     }
     $conn->set_charset('utf8mb4');
 
-    // --- Verify old password (guna md5) ---
+    // --- Verify old password (using md5) ---
     if (md5($old) !== $user['password']) {
         throw new Exception('Old password is incorrect', 400);
     }
@@ -41,7 +41,7 @@ try {
         throw new Exception('New password must differ from old password', 400);
     }
 
-    // --- Update password (guna md5) ---
+    // --- Update password (using md5) ---
     $newHash = md5($new);
     $stmt2 = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
     $stmt2->bind_param("si", $newHash, $user['id']);

@@ -1,5 +1,5 @@
 <?php
-// Include db.php untuk fungsi helper
+// Include db.php for helper functions
 require_once __DIR__ . '/db.php';
 
 try {

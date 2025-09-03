@@ -7,9 +7,11 @@ $task_id = $input['task_id'] ?? null;
 $title = $input['title'] ?? null;
 $description = $input['description'] ?? null;
 $status = $input['status'] ?? null;
-$due_date = $input['due_date'] ?? null;
+// $due_date = $input['due_date'] ?? null;
+$start_at = $input['start_at'] ?? null;
+$end_at = $input['end_at'] ?? null;
 
-if (!$task_id || !$title || !$status || !$due_date) {
+if (!$task_id || !$title || !$status || !$start_at || !$end_at) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required fields']);
     exit;
@@ -39,10 +41,10 @@ if ($result->num_rows === 0) {
 // Update task
 $stmt = $conn->prepare("
     UPDATE tasks
-    SET title = ?, description = ?, status = ?, due_date = ?
+    SET title = ?, description = ?, status = ?, start_at = ?, end_at = ?
     WHERE id = ?
 ");
-$stmt->bind_param("ssssi", $title, $description, $status, $due_date, $task_id);
+$stmt->bind_param("sssssi", $title, $description, $status, $start_at, $end_at, $task_id);
 $success = $stmt->execute();
 
 if ($success) {

@@ -105,7 +105,7 @@ try {
                     'company_name' => $client_data['company_name'],
                     'phone' => $client_data['client_phone'],
                     'status' => $client_data['client_status'],
-                    'type' => $client_data['client_type'],
+                    'type' => $client_data['client_type']
                 ];
             }
             $client_stmt->close();
@@ -135,7 +135,7 @@ try {
                     'skillset' => $freelancer_data['skillset'],
                     'availability' => (bool)$freelancer_data['availability'],
                     'status' => $freelancer_data['freelancer_status'],
-                    'approved_at' => $freelancer_data['approved_at'],
+                    'approved_at' => $freelancer_data['approved_at']
                 ];
             }
             $freelancer_stmt->close();
@@ -150,6 +150,18 @@ try {
             break;
     }
     
+    // Determine status based on role
+    $client_status = 'active'; // default for admin
+    $profile_id = null;
+    
+    if ($user_data['role'] === 'client' && isset($additional_info['client'])) {
+        $client_status = $additional_info['client']['status'];
+        $profile_id = $additional_info['client']['id'];
+    } elseif ($user_data['role'] === 'freelancer' && isset($additional_info['freelancer'])) {
+        $client_status = $additional_info['freelancer']['status'];
+        $profile_id = $additional_info['freelancer']['id'];
+    }
+    
     // Prepare response data (exclude sensitive information)
     $response_data = [
         'id' => (int)$user_data['id'],
@@ -158,6 +170,8 @@ try {
         'phone' => $user_data['phone'] ?? '',
         'role' => $user_data['role'] ?? '',
         'avatar_url' => $user_data['avatar_url'] ?? '',
+        'client_status' => $client_status,
+        'profile_id' => $profile_id,
         'additional_info' => $additional_info
     ];
     

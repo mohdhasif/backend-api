@@ -19,8 +19,31 @@ try {
         exit;
     }
 
-    // Cari user
-    $stmt = $conn->prepare("SELECT id, name, email, password, role, avatar_url FROM users WHERE email = ? LIMIT 1");
+    // Cari user dengan join ke table clients/freelancers berdasarkan role
+    $stmt = $conn->prepare("
+        SELECT 
+            u.id, 
+            u.name, 
+            u.email, 
+            u.password, 
+            u.role, 
+            u.avatar_url,
+            CASE 
+                WHEN u.role = 'client' THEN c.status
+                WHEN u.role = 'freelancer' THEN f.status
+                ELSE 'active'
+            END as client_status,
+            CASE 
+                WHEN u.role = 'client' THEN c.id
+                WHEN u.role = 'freelancer' THEN f.id
+                ELSE NULL
+            END as profile_id
+        FROM users u
+        LEFT JOIN clients c ON u.id = c.user_id AND u.role = 'client'
+        LEFT JOIN freelancers f ON u.id = f.user_id AND u.role = 'freelancer'
+        WHERE u.email = ? 
+        LIMIT 1
+    ");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $res = $stmt->get_result();

@@ -95,7 +95,7 @@ try {
     $mail->Host       = 'smtp.gmail.com'; // Your SMTP server
     $mail->SMTPAuth   = true;
     $mail->Username = 'mohdhasif24181@gmail.com';
-    $mail->Password   = 'bejt qgpy gntm vbst'; // SMTP password
+    $mail->Password   = ''; // SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption type
     $mail->Port       = 587; // SMTP port
 

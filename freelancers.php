@@ -138,7 +138,7 @@ try {
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'mohdhasif24181@gmail.com';
-    $mail->Password   = 'bejt qgpy gntm vbst'; // app password
+    $mail->Password   = ''; // app password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 

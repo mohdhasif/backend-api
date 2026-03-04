@@ -27,16 +27,16 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // ==========================
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
-// Guna env jika ada, kalau tak guna default localhost
-// define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-// define('DB_USER', getenv('DB_USER') ?: 'root');
-// define('DB_PASS', getenv('DB_PASS') ?: '');
-// define('DB_NAME', getenv('DB_NAME') ?: 'finiteapp');
+// Guna env jika ada, kalau tak guna default untuk Docker
+define('DB_HOST', getenv('DB_HOST') ?: 'mysql');
+define('DB_USER', getenv('DB_USER') ?: 'finiteapp_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'finiteapp_pass');
+define('DB_NAME', getenv('DB_NAME') ?: 'finiteapp');
 
-define('DB_HOST', getenv('DB_HOST') ?: '103.191.76.189');
-define('DB_USER', getenv('DB_USER') ?: 'finitemy_app');
-define('DB_PASS', getenv('DB_PASS') ?: 'Marketing123456!');
-define('DB_NAME', getenv('DB_NAME') ?: 'finitemy_app');
+// define('DB_HOST', getenv('DB_HOST') ?: '103.191.76.189');
+// define('DB_USER', getenv('DB_USER') ?: 'finitemy_app');
+// define('DB_PASS', getenv('DB_PASS') ?: 'Marketing123456!');
+// define('DB_NAME', getenv('DB_NAME') ?: 'finitemy_app');
 
 // Token expiry (hari). Boleh override dengan env.
 define('TOKEN_EXPIRES_IN_DAYS', (int)(getenv('TOKEN_EXPIRES_IN_DAYS') ?: 30));

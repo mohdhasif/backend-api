@@ -101,8 +101,8 @@ try {
 
     // Email info
     $mail->setFrom('mohdhasif24181@gmail.com', 'Admin Finite'); // ✅ buang satu '@'
-    // $mail->addAddress($email, $name); // hantar ke pengguna  
-    $mail->addAddress('marketing.finite@gmail.com', 'Finite Marketing'); // hantar ke pengguna
+    $mail->addAddress($email, $name); // hantar ke pengguna  
+    // $mail->addAddress('marketing.finite@gmail.com', 'Finite Marketing'); // hantar ke pengguna
     $mail->addReplyTo('mohdhasif24181@gmail.com');
 
     // Content

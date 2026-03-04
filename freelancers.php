@@ -134,21 +134,21 @@ $mail = new PHPMailer(true);
 try {
     logInfo("Starting email send process");
 
-    // $mail->isSMTP();
-    // $mail->Host       = 'smtp.gmail.com';
-    // $mail->SMTPAuth   = true;
-    // $mail->Username   = 'mohdhasif24181@gmail.com';
-    // $mail->Password   = 'bejt qgpy gntm vbst'; // app password
-    // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    // $mail->Port       = 587;
-
     $mail->isSMTP();
-    $mail->Host       = 'mail.finite.my';
-    $mail->SMTPAuth   = true;                               // authentication ON
-    $mail->Username   = 'app@finite.my';                    // according to your config
-    $mail->Password   = 'Marketing123456!';                 // password mailbox
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;        // SSL/TLS
-    $mail->Port       = 465;                                // SSL
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'mohdhasif24181@gmail.com';
+    $mail->Password   = 'bejt qgpy gntm vbst'; // app password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+
+    // $mail->isSMTP();
+    // $mail->Host       = 'mail.finite.my';
+    // $mail->SMTPAuth   = true;                               // authentication ON
+    // $mail->Username   = 'app@finite.my';                    // according to your config
+    // $mail->Password   = 'Marketing123456!';                 // password mailbox
+    // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;        // SSL/TLS
+    // $mail->Port       = 465;                                // SSL
     
     // Anti-spam settings
     $mail->Priority = 3;                                    // Normal priority
@@ -168,8 +168,8 @@ try {
     $mail->setFrom('app@finite.my', 'Finite App');          // From must be finite.my domain
     $mail->addReplyTo('app@finite.my', 'Finite App');       // or support@finite.my, your choice
     
-    // $mail->addAddress('mohdhasif24181@gmail.com', 'Mohd Hasif');
-    $mail->addAddress('recruitment.finite@gmail.com', 'Finite Marketing');
+    $mail->addAddress('mohdhasif24181@gmail.com', 'Mohd Hasif');
+    // $mail->addAddress('recruitment.finite@gmail.com', 'Finite Marketing');
 
             // Clean subject and body to prevent spam
     $cleanSubject = "Freelancer Application - $name";

@@ -185,21 +185,21 @@ try {
         try {
             logInfo("Starting email send process", ['to' => $to, 'subject' => $subject, 'is_admin' => $isAdmin]);
 
-            // $mail->isSMTP();
-            // $mail->Host       = 'smtp.gmail.com';
-            // $mail->SMTPAuth   = true;
-            // $mail->Username   = 'mohdhasif24181@gmail.com';
-            // $mail->Password   = 'bejt qgpy gntm vbst'; // app password
-            // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            // $mail->Port       = 587;
-
             $mail->isSMTP();
-            $mail->Host = 'mail.finite.my';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'app@finite.my';
-            $mail->Password = 'Marketing123456!';
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port = 465;
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'mohdhasif24181@gmail.com';
+            $mail->Password   = 'bejt qgpy gntm vbst'; // app password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+
+            // $mail->isSMTP();
+            // $mail->Host = 'mail.finite.my';
+            // $mail->SMTPAuth = true;
+            // $mail->Username = 'app@finite.my';
+            // $mail->Password = 'Marketing123456!';
+            // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            // $mail->Port = 465;
 
             // Anti-spam settings
             $mail->Priority = 3;
@@ -280,7 +280,8 @@ try {
     $adminBody .= "Please review this application at your earliest convenience.\n\n";
     $adminBody .= "Regards,\nFinite App System";
 
-    $adminEmailResult = sendMail("helloinfo.finite@gmail.com", $adminSubject, $adminBody, "Finite", true);
+    // $adminEmailResult = sendMail("helloinfo.finite@gmail.com", $adminSubject, $adminBody, "Finite", true);
+    $adminEmailResult = sendMail("mohdhasif24181@gmail.com", $adminSubject, $adminBody, "Finite", true);
 
     // Email to client
     logInfo("Preparing client email", ['client_email' => $email]);

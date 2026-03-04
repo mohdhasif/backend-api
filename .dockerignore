@@ -1,0 +1,11 @@
+.git
+.gitignore
+*.log
+*.bat
+*.vbs
+*.ps1
+.env
+.env.local
+node_modules
+.DS_Store
+Thumbs.db

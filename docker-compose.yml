@@ -1,0 +1,79 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: finiteapp
+      MYSQL_USER: finiteapp_user
+      MYSQL_PASSWORD: finiteapp_pass
+      TZ: Asia/Kuala_Lumpur
+    ports:
+      - "3306:3306"
+    volumes:
+      - backend_api_mysql_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./init-mysql-user.sql:/docker-entrypoint-initdb.d/02-init-user.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend_api_network
+
+  # PHP Application
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "18101:80"
+    volumes:
+      - ./:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./cache_prayer:/var/www/html/cache_prayer
+    environment:
+      DB_HOST: mysql
+      DB_USER: finiteapp_user
+      DB_PASS: finiteapp_pass
+      DB_NAME: finiteapp
+      TOKEN_EXPIRES_IN_DAYS: 30
+      TZ: Asia/Kuala_Lumpur
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - backend_api_network
+
+  # Cron service for prayer_cron.php
+  cron:
+    build: .
+    restart: unless-stopped
+    entrypoint: ["/bin/bash", "/var/www/html/docker-cron-entrypoint.sh"]
+    volumes:
+      - ./:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./cache_prayer:/var/www/html/cache_prayer
+    environment:
+      DB_HOST: mysql
+      DB_USER: finiteapp_user
+      DB_PASS: finiteapp_pass
+      DB_NAME: finiteapp
+      TOKEN_EXPIRES_IN_DAYS: 30
+      TZ: Asia/Kuala_Lumpur
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_started
+    networks:
+      - backend_api_network
+
+volumes:
+  backend_api_mysql_data:
+    driver: local
+
+networks:
+  backend_api_network:
+    driver: bridge

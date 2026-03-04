@@ -382,3 +382,126 @@
 [2025-08-30 20:31:15] HTTP 200 | Error:  | Response: {"id":"","errors":{"invalid_player_ids":["71137e79-7e6e-479c-989b-ab0bfa97fb7e"]}}
 [2025-08-30 20:31:15] Sending to player_ids: ["e27ab74c-9fea-4082-b14c-2839640fec12"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["e27ab74c-9fea-4082-b14c-2839640fec12"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1756557075}}
 [2025-08-30 20:31:15] HTTP 200 | Error:  | Response: {"id":"8ddb836e-23ce-41e1-8f5c-b0d10167c784","external_id":null}
+[2026-02-21 06:18:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1771625880}}
+[2026-02-21 06:18:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-21 13:30:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1771651801}}
+[2026-02-21 13:30:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-21 16:47:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1771663620}}
+[2026-02-21 16:47:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-21 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1771673341}}
+[2026-02-21 19:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-21 20:39:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1771677541}}
+[2026-02-21 20:39:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-22 06:18:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1771712281}}
+[2026-02-22 06:18:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-22 13:30:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1771738200}}
+[2026-02-22 13:30:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-22 16:47:02] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1771750022}}
+[2026-02-22 16:47:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-22 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1771759741}}
+[2026-02-22 19:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-22 20:39:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1771763941}}
+[2026-02-22 20:39:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-23 06:18:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1771798681}}
+[2026-02-23 06:18:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-23 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1771824541}}
+[2026-02-23 13:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-23 16:46:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1771836361}}
+[2026-02-23 16:46:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-23 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1771846141}}
+[2026-02-23 19:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-23 20:39:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1771850341}}
+[2026-02-23 20:39:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-24 06:18:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1771885081}}
+[2026-02-24 06:18:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-24 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1771910941}}
+[2026-02-24 13:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-24 16:46:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1771922761}}
+[2026-02-24 16:46:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-24 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1771932541}}
+[2026-02-24 19:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-24 20:39:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1771936741}}
+[2026-02-24 20:39:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-25 06:17:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1771971421}}
+[2026-02-25 06:17:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-25 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1771997341}}
+[2026-02-25 13:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-25 16:45:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1772009101}}
+[2026-02-25 16:45:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-25 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1772018941}}
+[2026-02-25 19:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-25 20:39:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1772023141}}
+[2026-02-25 20:39:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-26 06:17:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1772057821}}
+[2026-02-26 06:17:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-26 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1772083741}}
+[2026-02-26 13:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-26 16:45:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1772095500}}
+[2026-02-26 16:45:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-26 19:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1772105341}}
+[2026-02-26 19:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-26 20:38:02] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1772109482}}
+[2026-02-26 20:38:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 06:17:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1772144221}}
+[2026-02-27 06:17:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1772170141}}
+[2026-02-27 13:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 16:44:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1772181840}}
+[2026-02-27 16:43:59] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 16:44:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1772181841}}
+[2026-02-27 16:44:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 19:29:02] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1772191742}}
+[2026-02-27 19:29:02] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-27 20:38:00] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1772195880}}
+[2026-02-27 20:38:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-28 06:17:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Fajr"},"contents":{"en":"It's time for Fajr prayer."},"data":{"type":"prayer_notification","prayer":"Fajr","timestamp":1772230621}}
+[2026-02-28 06:17:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-28 13:29:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Dhuhr"},"contents":{"en":"It's time for Dhuhr prayer."},"data":{"type":"prayer_notification","prayer":"Dhuhr","timestamp":1772256541}}
+[2026-02-28 13:29:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-28 16:44:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Asr"},"contents":{"en":"It's time for Asr prayer."},"data":{"type":"prayer_notification","prayer":"Asr","timestamp":1772268241}}
+[2026-02-28 16:44:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-28 19:28:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Maghrib"},"contents":{"en":"It's time for Maghrib prayer."},"data":{"type":"prayer_notification","prayer":"Maghrib","timestamp":1772278081}}
+[2026-02-28 19:28:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
+[2026-02-28 20:38:01] Sending to player_ids: ["b4240eb4-0c44-4e27-b33c-90db16185a60"] | Payload: {"app_id":"eff1e397-c7ae-468d-9cd5-c673ba80821d","include_player_ids":["b4240eb4-0c44-4e27-b33c-90db16185a60"],"headings":{"en":"Prayer Time: Isha"},"contents":{"en":"It's time for Isha prayer."},"data":{"type":"prayer_notification","prayer":"Isha","timestamp":1772282281}}
+[2026-02-28 20:38:01] HTTP 403 | Error:  | Response: {"errors": ["Access denied.  Please include an 'Authorization: ...' header with a valid API key (https://documentation.onesignal.com/docs/en/keys-and-ids#api-keys)."]}
+
